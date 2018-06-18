@@ -30,7 +30,9 @@ class Machine {
     char c = args[0].charAt(0);
     switch(c) {
       case 'P': //println(millis() - st);
-                println(streval(args, 2));
+                String tmp = streval(args, 2);
+                //println(args[1] + "\t" + tmp);
+                logger.println(args[1] + "\t" + tmp);
                 break;
       case 'G': line = labels.get(args[1]);
                 break;
@@ -41,6 +43,9 @@ class Machine {
                 break;
       case 'V': floats.set(args[1], feval(args[2]));
                 break;
+      case 'E': end();
+                break;
+      case 'U': break;
       default:  println("no command " + c + " " + args);
     }
   }
