@@ -1,11 +1,10 @@
 class Machine {
   private int line;
   private String actions[];
-  //private ArrayList<String[]>
   private IntDict labels;
   public FloatDict floats;
   public Machine() {}
-  public void init(String file) {
+  public Machine init(String file) {
     actions = loadStrings(file);
     line = -1;
     labels = new IntDict();
@@ -19,6 +18,7 @@ class Machine {
         floats.set(s[1], feval(s[2]));
       }
     }
+    return this;
   }
   public void next() {
     action(actions[++line]);
@@ -29,17 +29,14 @@ class Machine {
     //printArray(args);
     char c = args[0].charAt(0);
     switch(c) {
-      case 'P': //println(millis() - st);
-                String tmp = streval(args, 2);
+      case 'P': String tmp = streval(args, 2);
                 //println(args[1] + "\t" + tmp);
                 logger.println(args[1] + "\t" + tmp);
                 break;
       case 'G': line = labels.get(args[1]);
                 break;
       case 'L': break;
-      case 'B': if(beval(args[1])) {
-                  line = labels.get(args[2]);
-                }
+      case 'B': if(beval(args[1])) line = labels.get(args[2]);
                 break;
       case 'V': floats.set(args[1], feval(args[2]));
                 break;
