@@ -35,7 +35,7 @@ String trimPar(String _exp) {
     if(par < 0) ok = false;
   }
   
-  while(exp.charAt(0) == '(' && exp.charAt(exp.length()-1) == ')' && ok) {
+  while(exp.length() != 0 && exp.charAt(0) == '(' && exp.charAt(exp.length()-1) == ')' && ok) {
     //println(exp);
     exp = exp.substring(1, exp.length()-1);
     par = 0;
@@ -56,14 +56,16 @@ boolean isBoolean(String exp) {
 String[] isplit(String args) {
   ArrayList<String> tmp = new ArrayList<String>();
   String[] res;
+  tmp.add(args.substring(0, args.indexOf("(")));
+  args = trimPar(args.substring(args.indexOf("(")));
   String[] asplit = split(args, '\"');
   for (int i = 0; i < asplit.length; i += 2) {
-    String[] bsplit = split(trim(asplit[i]), ' ');
+    String[] bsplit = split(trim(asplit[i]), ',');
     for (String s : bsplit) {
-      tmp.add(s);
+      tmp.add(trim(s));
     }
     if (i + 1 < asplit.length) {
-      tmp.add(asplit[i + 1]);
+      tmp.add(trim(asplit[i + 1]));
     }
   }
   res = new String[tmp.size()];

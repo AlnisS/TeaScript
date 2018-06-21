@@ -2,6 +2,7 @@ Machine m;
 int st;
 PrintWriter logger;
 void setup() {
+  //printArray(isplit("PRINT(6 M test)"));
   st = millis();
   m = new Machine();
   m.init("test.tea");

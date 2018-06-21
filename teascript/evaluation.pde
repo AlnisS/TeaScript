@@ -43,11 +43,12 @@ float feval(String exp) {
   if (mul != -1 && il(mul,div)) return feval(exp.substring(0, mul)) * feval(exp.substring(mul+1));
   if (div != -1 && il(div,mul)) return feval(exp.substring(0, div)) / feval(exp.substring(div+1));
 
-  return Float.parseFloat(exp);
+  return Float.parseFloat(exp); //<>//
 }
 
 String streval(String[] exp, int index) {
-  if (exp[index].indexOf("M") != -1) return str(feval(exp[index+1]));
+  
+  if (exp[index].indexOf("M") != -1) return str(feval(exp[index].substring(2, exp[index].length()-1)));
   else if (isBoolean(exp[index]))    return str(beval(exp[index]));
   return exp[index];
 }
