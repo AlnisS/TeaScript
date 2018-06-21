@@ -29,9 +29,15 @@ String trimPar(String _exp) {
   String exp = _exp.substring(0);
   int par = 0;
   boolean ok = true;
+  boolean inq = false;
   for(int i = 1; i < exp.length()-1; i++) {
-    if(exp.substring(i, i+1).equals("(")) par++;
-    if(exp.substring(i, i+1).equals(")")) par--;
+    if(exp.charAt(i) == '\"') inq = !inq;
+    if(exp.substring(i, i+1).equals("(") && !inq) {
+      par++;
+    }
+    if(exp.substring(i, i+1).equals(")") && !inq) {
+      par--;
+    }
     if(par < 0) ok = false;
   }
   
@@ -62,10 +68,10 @@ String[] isplit(String args) {
   for (int i = 0; i < asplit.length; i += 2) {
     String[] bsplit = split(trim(asplit[i]), ',');
     for (String s : bsplit) {
-      tmp.add(trim(s));
+      if(trim(s).length() != 0) tmp.add(trim(s));
     }
     if (i + 1 < asplit.length) {
-      tmp.add(trim(asplit[i + 1]));
+      tmp.add("\"" + trim(asplit[i + 1]) + "\"");
     }
   }
   res = new String[tmp.size()];
