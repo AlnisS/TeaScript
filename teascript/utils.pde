@@ -32,12 +32,8 @@ String trimPar(String _exp) {
   boolean inq = false;
   for(int i = 1; i < exp.length()-1; i++) {
     if(exp.charAt(i) == '\"') inq = !inq;
-    if(exp.substring(i, i+1).equals("(") && !inq) {
-      par++;
-    }
-    if(exp.substring(i, i+1).equals(")") && !inq) {
-      par--;
-    }
+    if(exp.substring(i, i+1).equals("(") && !inq) par++;
+    if(exp.substring(i, i+1).equals(")") && !inq) par--;
     if(par < 0) ok = false;
   }
   
@@ -62,6 +58,10 @@ boolean isBoolean(String exp) {
 String[] isplit(String args) {
   ArrayList<String> tmp = new ArrayList<String>();
   String[] res;
+  if(args.length() == 0 || trim(args).charAt(0) == '#') {
+    String[] s = {""};
+    return s;
+  }
   tmp.add(args.substring(0, args.indexOf("(")));
   args = trimPar(args.substring(args.indexOf("(")));
   String[] asplit = split(args, '\"');

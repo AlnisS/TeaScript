@@ -53,7 +53,7 @@ class Action {
       case "VARIABLE": type = Type.VARIABLE; break;
       case "END":      type = Type.END;      break;
       case "UNIT":     type = Type.UNIT;     break;
-      default: if(splits[0].charAt(0) == '#') type = Type.NONE;
+      default: if(splits[0].length() == 0) type = Type.NONE;
                else println("no command " + args);
     }
   }

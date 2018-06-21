@@ -1,10 +1,17 @@
+#weird logic test
 PRINT(6, true==true!=false)
+
+#variable test
 VARIABLE(test, 0)
 LABEL(a)
   PRINT(N, test)
   VARIABLE(test, test+1)
   BRANCH(test<5, a)
 PRINT(7, test)
+
+#string printing test
 PRINT(8, "test")
+
+#weird string printing test
 PRINT(9, "test +  1 < 123 PRINT(9) BRANCH(EEECG)))")
 END()
