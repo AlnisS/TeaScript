@@ -1,36 +1,22 @@
-#weird logic test
-PRINT(6, true==true!=false)
-
-#variable test
-VARIABLE(test, 0)
-LABEL(a)
-  PRINT(N, test)
-  VARIABLE(test, test+1)
-  BRANCH(test<5, a)
-PRINT(7, test)
-
-#string printing test
-PRINT(8, "test")
-
-#weird string printing test
-PRINT(9, "test +  1 < 123 PRINT(9) BRANCH(EEECG)))")
-#END()
-
-#for loop test
-VARIABLE(test, 1)
-LABEL(loop1)
-BRANCH(test > 3, endloop1)
-  PRINT(N, test)
-  VARIABLE(test, test + 1)
-  GOTO(loop1)
-LABEL(endloop1)
-
-PRINT(N, "whoo")
-#scope test
-VARIABLE(test, 1)
-UPSCOPE()
-VARIABLE(test, 2)
-PRINT(10, test)
-DOWNSCOPE()
-PRINT(11, test)
+VARIABLE(n, 9)
+VARIABLE(ans, 0.1)
+USERFUN(fib())
+PRINT(F, ans)
 END()
+
+FDEF(fib())
+  BRANCH(n > 1, fancy)
+  VARSET(ans, n)
+  GOTO(fibend)
+  LABEL(fancy)
+  #return fib(n-1) + fib(n-2);
+  VARIABLE(n, n-1)
+  VARIABLE(ans, 0)
+  USERFUN(fib())
+  VARIABLE(ansb, ans)
+  REMVAR(n)
+  VARIABLE(n, n-2)
+  USERFUN(fib())
+  VARSET(ans, ans+ansb)
+  LABEL(fibend)
+EFDEF()
