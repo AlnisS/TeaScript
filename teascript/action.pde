@@ -2,44 +2,43 @@ class Action {
   String thing;
   String[] splits;
   Type type;
-  void PRINT(Machine m) {
+  void PRINT() {
     String tmp = streval(splits, 2);
     println(splits[1] + "\t" + tmp);
     logger.println(splits[1] + "\t" + tmp);
   }
-  void GOTO(Machine m) {
+  void GOTO() {
     m.line = m.labels.get(splits[1]);
   }
-  void LABEL(Machine m) {
-    
+  void LABEL() {
+    m.labels.set(splits[1], m.labeltemp);
+    type = Type.NONE;
   }
-  void BRANCH(Machine m) {
+  void BRANCH() {
     if (beval(splits[1])) m.line = m.labels.get(splits[2]);
   }
-  void VARIABLE(Machine m) {
-    m.floats.set(splits[1], feval(splits[2]));
+  void VARIABLE() {
+    m.floats.get(0).set(splits[1], feval(splits[2]));
   }
-  void END(Machine m) {
+  void END() {
     end();
   }
-  void UNIT(Machine m) {
+  void UNIT() {
     
   }
-  void NONE(Machine m) {
+  void NONE() {
     
   }
-  void execute(Machine m) {
-    //String[] args = splits;
+  void execute() {
     switch(type) {
-      case PRINT:    PRINT(m);    break;
-      case GOTO:     GOTO(m);     break;
-      case LABEL:    LABEL(m);    break;
-      case BRANCH:   BRANCH(m);   break;
-      case VARIABLE: VARIABLE(m); break;
-      case END:      END(m);      break;
-      case UNIT:     UNIT(m);     break;
-      case NONE:     NONE(m);     break;
-      default: println("no command " + args);
+      case PRINT:    PRINT();    break;
+      case GOTO:     GOTO();     break;
+      case LABEL:    LABEL();    break;
+      case BRANCH:   BRANCH();   break;
+      case VARIABLE: VARIABLE(); break;
+      case END:      END();      break;
+      case UNIT:     UNIT();     break;
+      case NONE:     NONE();     break;
     }
   }
   Action(String args) {

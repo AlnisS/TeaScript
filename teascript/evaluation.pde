@@ -1,5 +1,4 @@
 boolean beval(String exp) {
-  //println(". "+ exp);
   exp = trimPar(exp);
   
   String tstr = fstring(exp); //filter characters within parentheses
@@ -30,8 +29,8 @@ boolean beval(String exp) {
 }
 
 float feval(String exp) {
-  exp = trimPar(exp);
-  if (m.floats.hasKey(exp)) return m.floats.get(exp);
+  exp = trim(trimPar(exp));
+  if (flookupable(exp)) return flookup(exp);
   
   String tstr = fstring(exp);
   int add = tstr.lastIndexOf("+");
@@ -43,24 +42,24 @@ float feval(String exp) {
   if (sub != -1 && il(sub,add)) return feval(exp.substring(0, sub)) - feval(exp.substring(sub+1));
   if (mul != -1 && il(mul,div)) return feval(exp.substring(0, mul)) * feval(exp.substring(mul+1));
   if (div != -1 && il(div,mul)) return feval(exp.substring(0, div)) / feval(exp.substring(div+1));
-
+  
   return Float.parseFloat(exp);
+}
+
+boolean flookupable(String exp) {
+  return m.floats.get(0).hasKey(exp);
+}
+
+float flookup(String exp) {
+  return m.floats.get(0).get(exp);
 }
 
 boolean isString(String s) {
   return s.indexOf("\"") != -1;
 }
+
 String streval(String[] exp, int index) {
-  if (isString(exp[index])) {
-    //println("stringing " + exp[index]);
-    return exp[index].substring(1, exp[index].length()-1);
-  }
-  if (isBoolean(exp[index])) {
-    //println("booling " + exp[index]);
-    return str(beval(exp[index]));
-  }
-  //if (exp[index].indexOf("M") != -1) return str(feval(exp[index].substring(2, exp[index].length()-1)));
-  //println("fevaling " + m.line + exp[index]);
+  if (isString(exp[index]))  return exp[index].substring(1, exp[index].length()-1);
+  if (isBoolean(exp[index])) return str(beval(exp[index]));
   return str(feval(exp[index]));
-  
 }

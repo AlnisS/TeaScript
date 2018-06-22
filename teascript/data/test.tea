@@ -15,3 +15,13 @@ PRINT(8, "test")
 #weird string printing test
 PRINT(9, "test +  1 < 123 PRINT(9) BRANCH(EEECG)))")
 END()
+
+#for loop test
+VARIABLE(test, 1)
+LABEL(loop1)
+BRANCH(test > 3, endloop1)
+  PRINT(N, test)
+  VARIABLE(test, test + 1)
+  GOTO(loop1)
+LABEL(endloop1)
+END()
