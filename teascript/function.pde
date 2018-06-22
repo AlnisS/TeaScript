@@ -10,12 +10,15 @@ class Function {
   Function dup() {
     return new Function(actions, -(decplace+1));
   }
-  void execute() {
+  float execute() {
     new Action("UPSCOPE()").execute(this);
     while(++line < actions.length) {
       actions[line].execute(this);
     }
+    float ans = m.floats.get(m.floats.size() - 1).get("ans");
     new Action("DOWNSCOPE()").execute(this);
+    line = -1;
+    return ans;
   }
   void GOTO(int line_) {
     line = line_+decplace;

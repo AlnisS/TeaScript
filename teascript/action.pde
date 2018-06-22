@@ -58,6 +58,9 @@ class Action {
   void REMVAR() {
     m.floats.get(m.floats.size() - 1).remove(splits[1]);
   }
+  void BRKPT() {
+    print("");
+  }
   void execute(Function f) {
     jumpcall = f;
     switch(type) { //<>//
@@ -76,6 +79,7 @@ class Action {
       case EFDEF:    EFDEF();    break;
       case VARSET:   VARSET();   break;
       case REMVAR:   REMVAR();   break;
+      case BRKPT:    BRKPT();    break;
     }
   }
   Action(String args) {
@@ -96,6 +100,7 @@ class Action {
       case "USERFUN":  type = Type.USERFUN;  break;
       case "VARSET":   type = Type.VARSET;   break;
       case "REMVAR":   type = Type.REMVAR;   break;
+      case "BRKPT":    type = Type.BRKPT;    break;
       default: if(splits[0].length() == 0) type = Type.NONE;
                else println("no command " + args);
     }
@@ -104,4 +109,4 @@ class Action {
     return thing;
   }
 }
-enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, UNIT, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR}
+enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, UNIT, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT}

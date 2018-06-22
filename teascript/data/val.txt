@@ -13,4 +13,6 @@ id	val
 #12	3
 #13	test function worked!
 #14	1
+15	2.5
+16	5
 F	34

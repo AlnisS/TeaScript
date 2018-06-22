@@ -50,6 +50,7 @@ boolean flookupable(String exp) {
   for(int i = m.floats.size() - 1; i >= 0; i--) {
     if(m.floats.get(i).hasKey(exp)) return true;
   }
+  if(m.functions.containsKey(exp)) return true;
   return false;
 }
 
@@ -57,7 +58,7 @@ float flookup(String exp) {
   for(int i = m.floats.size() - 1; i >= 0; i--) {
     if(m.floats.get(i).hasKey(exp)) return m.floats.get(i).get(exp);
   }
-  return -PI;
+  return m.functions.get(exp).dup().execute();
 }
 
 boolean isString(String s) {
