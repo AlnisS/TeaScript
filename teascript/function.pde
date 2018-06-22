@@ -8,7 +8,7 @@ class Function {
     decplace = -1-__;
   }
   Function dup() {
-    return new Function(actions, decplace);
+    return new Function(actions, -(decplace+1));
   }
   void execute() {
     new Action("UPSCOPE()").execute(this);
@@ -18,6 +18,6 @@ class Function {
     new Action("DOWNSCOPE()").execute(this);
   }
   void GOTO(int line_) {
-    line = line_-decplace;
+    line = line_+decplace;
   }
 }

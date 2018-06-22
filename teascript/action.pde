@@ -4,6 +4,7 @@ class Action {
   Type type;
   Function jumpcall;
   void PRINT() {
+    if(splits.length == 2) splits = new String[]{splits[0], "N", splits[1]};
     String tmp = streval(splits, 2);
     println(splits[1] + "\t" + tmp);
     logger.println(splits[1] + "\t" + tmp);
