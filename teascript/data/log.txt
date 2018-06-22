@@ -8,3 +8,9 @@ N	4.0
 7	5.0
 8	test
 9	test +  1 < 123 PRINT(9) BRANCH(EEECG)))
+N	1.0
+N	2.0
+N	3.0
+N	whoo
+10	2.0
+11	1.0

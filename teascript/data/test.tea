@@ -14,7 +14,7 @@ PRINT(8, "test")
 
 #weird string printing test
 PRINT(9, "test +  1 < 123 PRINT(9) BRANCH(EEECG)))")
-END()
+#END()
 
 #for loop test
 VARIABLE(test, 1)
@@ -24,4 +24,13 @@ BRANCH(test > 3, endloop1)
   VARIABLE(test, test + 1)
   GOTO(loop1)
 LABEL(endloop1)
+
+PRINT(N, "whoo")
+#scope test
+VARIABLE(test, 1)
+UPSCOPE()
+VARIABLE(test, 2)
+PRINT(10, test)
+DOWNSCOPE()
+PRINT(11, test)
 END()

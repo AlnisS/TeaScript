@@ -18,7 +18,7 @@ class Action {
     if (beval(splits[1])) m.line = m.labels.get(splits[2]);
   }
   void VARIABLE() {
-    m.floats.get(0).set(splits[1], feval(splits[2]));
+    m.floats.get(m.floats.size() - 1).set(splits[1], feval(splits[2]));
   }
   void END() {
     end();
@@ -28,6 +28,12 @@ class Action {
   }
   void NONE() {
     
+  }
+  void UPSCOPE() {
+    m.floats.add(new FloatDict());
+  }
+  void DOWNSCOPE() {
+    m.floats.remove(m.floats.size()-1);
   }
   void execute() {
     switch(type) {
@@ -39,6 +45,8 @@ class Action {
       case END:      END();      break;
       case UNIT:     UNIT();     break;
       case NONE:     NONE();     break;
+      case UPSCOPE:  UPSCOPE();  break;
+      case DOWNSCOPE:DOWNSCOPE();break;
     }
   }
   Action(String args) {
@@ -52,6 +60,8 @@ class Action {
       case "VARIABLE": type = Type.VARIABLE; break;
       case "END":      type = Type.END;      break;
       case "UNIT":     type = Type.UNIT;     break;
+      case "UPSCOPE":  type = Type.UPSCOPE;  break;
+      case "DOWNSCOPE":type = Type.DOWNSCOPE;break;
       default: if(splits[0].length() == 0) type = Type.NONE;
                else println("no command " + args);
     }
@@ -60,4 +70,4 @@ class Action {
     return thing;
   }
 }
-enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, UNIT, NONE}
+enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, UNIT, NONE, UPSCOPE, DOWNSCOPE}

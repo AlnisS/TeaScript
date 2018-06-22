@@ -47,11 +47,17 @@ float feval(String exp) {
 }
 
 boolean flookupable(String exp) {
-  return m.floats.get(0).hasKey(exp);
+  for(int i = m.floats.size() - 1; i >= 0; i--) {
+    if(m.floats.get(i).hasKey(exp)) return true;
+  }
+  return false;
 }
 
 float flookup(String exp) {
-  return m.floats.get(0).get(exp);
+  for(int i = m.floats.size() - 1; i >= 0; i--) {
+    if(m.floats.get(i).hasKey(exp)) return m.floats.get(i).get(exp);
+  }
+  return -PI;
 }
 
 boolean isString(String s) {
