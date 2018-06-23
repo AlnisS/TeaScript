@@ -1,26 +1,19 @@
 PRINT(15, test())
 PRINT(16, test()+test())
+PRINT(17, printalias(1234))
 
-VARIABLE(n, 9)
-PRINT(F, fib())
+PRINT(F, fib(9))
 END()
 
 FDEF(fib())
-  BRANCH(n > 1, fancy)
-  VARIABLE(ans, n)
-  GOTO(fibend)
-  
-  LABEL(fancy)
-  VARIABLE(n1, n-1)
-  VARIABLE(n2, n-2)
-  
-  VARIABLE(n, n1)
-  VARIABLE(p1, fib())
-  VARIABLE(n, n2)
-  VARIABLE(p2, fib())
-  VARIABLE(ans, p1 + p2)
-
+  VARIABLE(ans, a1)
+  BRANCH(a1 <= 1, fibend)
+  VARIABLE(ans, fib(a1-1) + fib(a1-2))
   LABEL(fibend)
+EFDEF()
+
+FDEF(printalias())
+  VARIABLE(ans, a1)
 EFDEF()
 
 FDEF(test())

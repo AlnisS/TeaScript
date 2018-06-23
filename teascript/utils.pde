@@ -13,9 +13,9 @@ String fstring(String exp) {
   int par = 0;
   int[] pars = new int[exp.length()];
   for(int i = 0; i < exp.length(); i++) {
-    if(exp.substring(i, i+1).equals("(")) par++;
-    if(exp.substring(i, i+1).equals(")")) par--;
-    pars[i] = par;
+    if(exp.substring(i, i+1).equals("(")) pars[i] = par++;
+    else if(exp.substring(i, i+1).equals(")")) pars[i] = --par;
+    else pars[i] = par;
   }
   char[] tmp = exp.toCharArray();
   for(int j = 0; j < tmp.length; j++) {
@@ -25,6 +25,16 @@ String fstring(String exp) {
   }
   return new String(tmp);
 }
+
+String removeArgs(String _exp) {
+  String exp = fstring(_exp);
+  String res = "";
+  for(int i = 0; i < exp.length(); i++) {
+    if(exp.charAt(i) != '#') res += exp.charAt(i);
+  }
+  return res;
+}
+
 String trimPar(String _exp) {
   String exp = _exp.substring(0);
   int par = 0;

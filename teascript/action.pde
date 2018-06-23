@@ -39,7 +39,7 @@ class Action {
     m.floats.remove(m.floats.size()-1);
   }
   void USERFUN() {
-    m.functions.get(splits[1]).dup().execute();
+    //m.functions.get(splits[1]).dup().execute();
   }
   void FDEF() {
     ArrayList<Action> actions = new ArrayList<Action>();
@@ -63,7 +63,7 @@ class Action {
   }
   void execute(Function f) {
     jumpcall = f;
-    switch(type) { //<>//
+    switch(type) {
       case PRINT:    PRINT();    break;
       case GOTO:     GOTO();     break;
       case LABEL:    LABEL();    break;
