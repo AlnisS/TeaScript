@@ -1,7 +1,7 @@
 class Function {
   int line = -1;
   Action[] actions;
-  int decplace;
+  int decplace;  //adjustment to local action space from global action space
   
   Function(Action[] _, int __) {
     actions = _;
@@ -11,15 +11,18 @@ class Function {
     return new Function(actions, -(decplace+1));
   }
   float execute(String vars) {
+    m.debugline = -1-decplace;
     new Action("UPSCOPE()").execute(this);
     String[] args = isplit(trim(vars));
     for(int i = 1; i < args.length; i++) {
       new Action("VARIABLE(a"+i+","+args[i]+")").execute(this);
     }
     while(++line < actions.length) {
+      m.debugline = line - decplace;
       actions[line].execute(this);
     }
-    float ans = m.floats.get(m.floats.size() - 1).get("ans");
+    m.debugline = -1 - decplace;
+    float ans = getVar("ans");
     new Action("DOWNSCOPE()").execute(this);
     line = -1;
     return ans;

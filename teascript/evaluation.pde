@@ -43,7 +43,9 @@ float feval(String exp) {
   if (mul != -1 && il(mul,div)) return feval(exp.substring(0, mul)) * feval(exp.substring(mul+1));
   if (div != -1 && il(div,mul)) return feval(exp.substring(0, div)) / feval(exp.substring(div+1));
   
-  return Float.parseFloat(exp);
+  float f = 0;
+  try{f = Float.parseFloat(exp);} catch(Exception e) {error("FLOATPARSE", "problem parsing "+exp);}
+  return f;
 }
 
 boolean flookupable(String exp) {
@@ -56,9 +58,21 @@ boolean flookupable(String exp) {
 
 float flookup(String exp) {
   for(int i = m.floats.size() - 1; i >= 0; i--) {
-    if(m.floats.get(i).hasKey(exp)) return m.floats.get(i).get(exp);
+    if(hasVar(exp, i)) return getVar(exp, i);
   }
   return m.functions.get(removeArgs(exp)).dup().execute(exp);
+}
+
+boolean hasVar(String exp, int level) {
+  return m.floats.get(level).hasKey(exp);
+}
+float getVar(String exp) {
+  return getVar(exp, m.floats.size() - 1);
+}
+float getVar(String exp, int level) {
+  float f = 0;
+  try{f = m.floats.get(level).get(exp);} catch(Exception e) {error("NOVAR", "no variable "+exp+" found.");}
+  return f;
 }
 
 boolean isString(String s) {

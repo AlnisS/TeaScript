@@ -1,4 +1,11 @@
-
+enum Error {MISMATCH, NOVAR, NOCOMMAND, FLOATPARSE}
+void error(String s, String message) {
+  println("\n\n\nerror "+s+" on line "+(m.debugline+1)+":");
+  println(m.rawstrings[m.debugline]);
+  println(message);
+  println("");
+  exit();
+}
 
 boolean il(float a, float b) { //index less, like less than but ignores -1 indices
   return a < b || b == -1;
@@ -30,6 +37,7 @@ String fstring(String exp, String splito, String splitc) {
     }
     else pars[i] = par;
   }
+  if(!o || par != 0) error("MISMATCH", "mismatch on "+exp+" with o "+splito+" and c "+splitc);
   char[] tmp = exp.toCharArray();
   for(int j = 0; j < tmp.length; j++) {
     if(pars[j] > 0) {

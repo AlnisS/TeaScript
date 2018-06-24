@@ -102,7 +102,7 @@ class Action {
       case "REMVAR":   type = Type.REMVAR;   break;
       case "BRKPT":    type = Type.BRKPT;    break;
       default: if(splits[0].length() == 0) type = Type.NONE;
-               else println("no command " + args);
+               else error("NOCOMMAND", "command "+splits[0]+" not found.");
     }
   }
   String g() {

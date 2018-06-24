@@ -1,10 +1,12 @@
 class Machine {
-  private int line;
+  int line;
+  int debugline;
   Action[] actions;
   IntDict labels;
   ArrayList<FloatDict> floats;
   int labeltemp;
   HashMap<String, Function> functions;
+  String[] rawstrings;
   
   public Machine() {
     
@@ -16,9 +18,12 @@ class Machine {
     functions = new HashMap<String, Function>();
     floats.add(new FloatDict());
     
-    String[] rawstrings = loadStrings(file);
+    rawstrings = loadStrings(file);
     actions = new Action[rawstrings.length];
-    for (int i = 0; i < actions.length; i++) actions[i] = new Action(rawstrings[i]);
+    for (int i = 0; i < actions.length; i++) {
+      debugline = i;
+      actions[i] = new Action(rawstrings[i]);
+    }
 
     for (int i = 0; i < actions.length; i++) {
       Action a = actions[i];
@@ -27,7 +32,8 @@ class Machine {
     }
   }
   public void next() {
-    action(++line);
+    debugline = ++line;
+    action(line);
   }
 
   void action(int line) {
