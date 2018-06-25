@@ -30,7 +30,7 @@ boolean beval(String exp) {
   if (gte != -1) return feval(exp.substring(0, gte)) >= feval(exp.substring(gte+2));
   if (lse != -1) return feval(exp.substring(0, lse)) <= feval(exp.substring(lse+2));
   
-  return exp.equals("true");
+  return trim(exp).equals("true");
 }
 
 float feval(String exp) {
