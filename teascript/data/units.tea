@@ -1,0 +1,41 @@
+FDEF(init())
+  
+EFDEF()
+FDEF(main())
+  PRINT(15, test())
+  PRINT(16, test()+test())
+  PRINT(17, printalias(1234))
+  PRINT(18, addtest(1, 2))
+  PRINT(19, 2 * 3 ** 4 * 2)
+  PRINT(20, (0-11) % 3)
+  PRINT(21, (0-11) %% 3)
+  
+  PRINT(22, true ^ true)
+  PRINT(23, true ^ false)
+  PRINT(24, false ^ true)
+  PRINT(25, false ^ false)
+
+  PRINT(F, fib(9))
+  PRINT(A, fib(6))
+  PRINT(FB, fib(fib(6)+1))
+EFDEF()
+
+
+FDEF(addtest())
+  RET(a1+a2)
+EFDEF()
+
+FDEF(fib())
+  BRANCH(a1 <= 1, simple)
+  RET(fib(a1-1) + fib(a1-2))
+  LABEL(simple)
+  RET(a1)
+EFDEF()
+
+FDEF(printalias())
+  RET(a1)
+EFDEF()
+
+FDEF(test())
+  RET(2.5)
+EFDEF()

@@ -1,7 +1,18 @@
 Table log;
 Table val;
+void test() {
+  testing = true;
+  logger = createWriter("data/log.unitlog");
+  logger.println("id\tval");
+  m = new Machine();
+  m.init("units.tea");
+  m.action();
+  logger.flush();
+  logger.close();
+  run();
+}
 void run() {
-  log = loadTable("log.txt", "header, tsv");
+  log = loadTable("log.unitlog", "header, tsv");
   val = loadTable("val.txt", "header, tsv");
   for(TableRow row : val.rows()) {
     String id = row.getString("id");

@@ -7,7 +7,7 @@ class Action {
     if(splits.length == 2) splits = new String[]{splits[0], "N", splits[1]};
     String tmp = streval(splits, 2);
     println(splits[1] + "\t" + tmp);
-    logger.println(splits[1] + "\t" + tmp);
+    if(testing) logger.println(splits[1] + "\t" + tmp);
   }
   void GOTO() {
     jumpcall.GOTO(m.labels.get(splits[1]));
