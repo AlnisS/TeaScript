@@ -1,3 +1,10 @@
+void clsap(String[] s) {
+  String _ = "list: ";
+  for(String a : s) {
+    _+=a+" ";
+  }
+  println(_);
+}
 int noconpos(String exp, String ok, String badrx, String bad) {
   String[] p = exp.split(badrx);
   for(int i = p.length - 1; i>=0; i--) {

@@ -61,6 +61,9 @@ class Action {
   void BRKPT() {
     print("");
   }
+  void RET() {
+    jumpcall.RET(feval(splits[1]));
+  }
   void execute(Function f) {
     jumpcall = f;
     switch(type) {
@@ -80,6 +83,7 @@ class Action {
       case VARSET:   VARSET();   break;
       case REMVAR:   REMVAR();   break;
       case BRKPT:    BRKPT();    break;
+      case RET:      RET();      break;
     }
   }
   Action(String args) {
@@ -101,6 +105,7 @@ class Action {
       case "VARSET":   type = Type.VARSET;   break;
       case "REMVAR":   type = Type.REMVAR;   break;
       case "BRKPT":    type = Type.BRKPT;    break;
+      case "RET":      type = Type.RET;      break;
       default: if(splits[0].length() == 0) type = Type.NONE;
                else error("NOCOMMAND", "command "+splits[0]+" not found.");
     }
@@ -109,4 +114,4 @@ class Action {
     return thing;
   }
 }
-enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, UNIT, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT}
+enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, UNIT, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET}

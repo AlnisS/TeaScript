@@ -2,6 +2,7 @@ class Function {
   int line = -1;
   Action[] actions;
   int decplace;  //adjustment to local action space from global action space
+  float ans;
   
   Function(Action[] _, int __) {
     actions = _;
@@ -22,10 +23,13 @@ class Function {
       actions[line].execute(this);
     }
     m.debugline = -1 - decplace;
-    float ans = getVar("ans");
     new Action("DOWNSCOPE()").execute(this);
     line = -1;
     return ans;
+  }
+  void RET(float _) {
+    ans = _;
+    line = actions.length;
   }
   void GOTO(int line_) {
     line = line_+decplace;

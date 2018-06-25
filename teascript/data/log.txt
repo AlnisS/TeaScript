@@ -12,4 +12,5 @@ id	val
 25	false
 F	34.0
 A	8.0
+fib	1.0
 FB	34.0
