@@ -1,3 +1,18 @@
+int noconpos(String exp, String ok, String badrx, String bad) {
+  String[] p = exp.split(badrx);
+  for(int i = p.length - 1; i>=0; i--) {
+    int lio = p[i].lastIndexOf(ok);
+    if(lio != -1) {
+       int acc = 0;
+       for(int j = 0; j < i; j++) {
+           acc += bad.length() + p[j].length();
+       }
+       return acc + lio;
+    }
+  }
+  return -1;
+}
+
 enum Error {MISMATCH, NOVAR, NOCOMMAND, FLOATPARSE}
 void error(String s, String message) {
   println("\n\n\nerror "+s+" on line "+(m.debugline+1)+":");

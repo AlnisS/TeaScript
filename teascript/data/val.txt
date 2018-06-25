@@ -17,5 +17,12 @@ id	val
 16	5
 17	1234
 18	3
+19	324
+20	1
+21	-2
+22	false
+23	true
+24	true
+25	false
 F	34
 FB	34

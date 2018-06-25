@@ -4,48 +4,69 @@ boolean beval(String exp) {
   String tstr = fstring(exp); //filter characters within parentheses
   int or  = tstr.lastIndexOf("||");
   int and = tstr.lastIndexOf("&&");
-  int gtr = tstr.lastIndexOf(">");
-  int les = tstr.lastIndexOf("<");
+  int gtr = noconpos(tstr, ">", ">=", ">=");
+  int les = noconpos(tstr, "<", "<=", "<=");
   int gte = tstr.lastIndexOf(">=");
   int lse = tstr.lastIndexOf("<=");
   int neq = tstr.lastIndexOf("!=");
   int equ = tstr.lastIndexOf("==");
+  int xor = tstr.lastIndexOf("^");
   
-  if(gtr == gte) gtr = -1; //handle operators which happen to be substrings of other operators
-  if(les == lse) les = -1;
+  int maxmul = max(max(gtr, les), max(gte, lse));
+  if(gtr != maxmul) gtr = -1;
+  if(les != maxmul) les = -1;
+  if(gte != maxmul) gte = -1;
+  if(lse != maxmul) lse = -1;
   
-  if(or != -1)  return beval(exp.substring(0, or)) || beval(exp.substring(or+2));
+  if(or != -1)  return beval(exp.substring(0, or))  || beval(exp.substring(or+2));
   if(and != -1) return beval(exp.substring(0, and)) && beval(exp.substring(and+2));
+  if(xor != -1) return beval(exp.substring(0, xor)) ^  beval(exp.substring(xor+1));
   
-  if (neq != -1 && il(neq,equ)) return !equiv(exp.substring(0, neq), exp.substring(neq+2));
-  if (equ != -1 && il(equ,neq)) return  equiv(exp.substring(0, equ), exp.substring(equ+2));
+  if (neq != -1 && neq>equ) return !equiv(exp.substring(0, neq), exp.substring(neq+2));
+  if (equ != -1 && equ>neq) return  equiv(exp.substring(0, equ), exp.substring(equ+2));
   
-  if (gtr != -1 && il(gtr,les) && il(gtr,gte) && il(gtr,lse)) return feval(exp.substring(0, gtr)) > feval(exp.substring(gtr+1));
-  if (les != -1 && il(les,gtr) && il(les,gte) && il(les,lse)) return feval(exp.substring(0, les)) < feval(exp.substring(les+1));
-  if (gte != -1 && il(gte,gtr) && il(gte,les) && il(gte,lse)) return feval(exp.substring(0, gte)) >= feval(exp.substring(gte+2));
-  if (lse != -1 && il(lse,gtr) && il(lse,les) && il(lse,gte)) return feval(exp.substring(0, lse)) <= feval(exp.substring(lse+2));
+  if (gtr != -1) return feval(exp.substring(0, gtr)) > feval(exp.substring(gtr+1));
+  if (les != -1) return feval(exp.substring(0, les)) < feval(exp.substring(les+1));
+  if (gte != -1) return feval(exp.substring(0, gte)) >= feval(exp.substring(gte+2));
+  if (lse != -1) return feval(exp.substring(0, lse)) <= feval(exp.substring(lse+2));
   
   return exp.equals("true");
 }
 
 float feval(String exp) {
-  exp = trim(trimPar(exp));
+  exp = trim(trimPar(trim(exp)));
   if (flookupable(exp)) return flookup(exp);
   
   String tstr = fstring(exp);
   int add = tstr.lastIndexOf("+");
   int sub = tstr.lastIndexOf("-");
-  int mul = tstr.lastIndexOf("*");
+  int mul = noconpos(tstr, "*", "\\*\\*", "**");
   int div = tstr.lastIndexOf("/");
+  int rem = tstr.lastIndexOf("%%");
+  int mod = noconpos(tstr, "%", "%%", "%%");
+  int pow = tstr.lastIndexOf("**");
   
-  if (add != -1 && il(add,sub)) return feval(exp.substring(0, add)) + feval(exp.substring(add+1));
-  if (sub != -1 && il(sub,add)) return feval(exp.substring(0, sub)) - feval(exp.substring(sub+1));
-  if (mul != -1 && il(mul,div)) return feval(exp.substring(0, mul)) * feval(exp.substring(mul+1));
-  if (div != -1 && il(div,mul)) return feval(exp.substring(0, div)) / feval(exp.substring(div+1));
+  int maxmul = max(max(mul, div), max(rem, mod));
+  if(mul != maxmul) mul = -1;
+  if(div != maxmul) div = -1;
+  if(rem != maxmul) rem = -1;
+  if(mod != maxmul) mod = -1;
+  
+  if (add != -1 && add>sub) return feval(exp.substring(0, add))  +  feval(exp.substring(add+1));
+  if (sub != -1 && sub>add) return feval(exp.substring(0, sub))  -  feval(exp.substring(sub+1));
+  if (mul != -1)            return feval(exp.substring(0, mul))  *  feval(exp.substring(mul+1));
+  if (div != -1)            return feval(exp.substring(0, div))  /  feval(exp.substring(div+1));
+  if (rem != -1)            return feval(exp.substring(0, rem))  %  feval(exp.substring(rem+2));
+  if (mod != -1)            return mod(feval(exp.substring(0, mod)),feval(exp.substring(mod+1)));
+  if (pow != -1)            return pow(feval(exp.substring(0, pow)),feval(exp.substring(pow+2)));
   
   float f = 0;
   try{f = Float.parseFloat(exp);} catch(Exception e) {error("FLOATPARSE", "problem parsing "+exp);}
   return f;
+}
+
+float mod(float a, float b) {
+  return (a % b + b) % b;
 }
 
 boolean flookupable(String exp) {
