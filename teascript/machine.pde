@@ -1,5 +1,4 @@
 class Machine {
-  int line;
   int debugline;
   Action[] actions;
   IntDict labels;
@@ -12,7 +11,6 @@ class Machine {
     
   }
   void init(String file) {
-    line = -1;
     labels = new IntDict();
     floats = new ArrayList<FloatDict>();
     functions = new HashMap<String, Function>();
@@ -28,15 +26,11 @@ class Machine {
     for (int i = 0; i < actions.length; i++) {
       Action a = actions[i];
       labeltemp = i;
-      if (a.type == Type.LABEL || a.type == Type.FDEF) a.execute(null);
+      if (a.type == Type.LABEL || a.type == Type.FDEF || a.type == Type.GVAR) a.execute(null);
     }
+    new Action("USERFUN(init())").execute(null);
   }
-  public void next() {
-    debugline = ++line;
-    action(line);
-  }
-
-  void action(int line) {
-    actions[line].execute(null);
+  void action() {
+    new Action("USERFUN(main())").execute(null);
   }
 }

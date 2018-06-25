@@ -3,13 +3,13 @@ int st;
 PrintWriter logger;
 void setup() {
   st = millis();
-  m = new Machine();
-  m.init("test.tea");
   logger = createWriter("data/log.txt");
   logger.println("id\tval");
+  m = new Machine();
+  m.init("test.tea");
 }
 void draw() {
-  m.next();
+  m.action();
 }
 void end() {
   logger.flush();

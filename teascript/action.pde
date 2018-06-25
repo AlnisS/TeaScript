@@ -10,8 +10,7 @@ class Action {
     logger.println(splits[1] + "\t" + tmp);
   }
   void GOTO() {
-    if(jumpcall == null) m.line = m.labels.get(splits[1]);
-    else jumpcall.GOTO(m.labels.get(splits[1]));
+    jumpcall.GOTO(m.labels.get(splits[1]));
   }
   void LABEL() {
     m.labels.set(splits[1], m.labeltemp);
@@ -39,7 +38,7 @@ class Action {
     m.floats.remove(m.floats.size()-1);
   }
   void USERFUN() {
-    //m.functions.get(splits[1]).dup().execute();
+    m.functions.get(splits[1]).dup().execute("");
   }
   void FDEF() {
     ArrayList<Action> actions = new ArrayList<Action>();
@@ -64,6 +63,9 @@ class Action {
   void RET() {
     jumpcall.RET(feval(splits[1]));
   }
+  void GVAR() {
+    m.floats.get(0).set(splits[1], feval(splits[2]));
+  }
   void execute(Function f) {
     jumpcall = f;
     switch(type) {
@@ -84,6 +86,7 @@ class Action {
       case REMVAR:   REMVAR();   break;
       case BRKPT:    BRKPT();    break;
       case RET:      RET();      break;
+      case GVAR:     GVAR();     break;
     }
   }
   Action(String args) {
@@ -106,6 +109,7 @@ class Action {
       case "REMVAR":   type = Type.REMVAR;   break;
       case "BRKPT":    type = Type.BRKPT;    break;
       case "RET":      type = Type.RET;      break;
+      case "GVAR":     type = Type.GVAR;     break;
       default: if(splits[0].length() == 0) type = Type.NONE;
                else error("NOCOMMAND", "command "+splits[0]+" not found.");
     }
@@ -114,4 +118,4 @@ class Action {
     return thing;
   }
 }
-enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, UNIT, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET}
+enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, UNIT, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR}
