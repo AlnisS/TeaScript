@@ -107,7 +107,7 @@ boolean isBoolean(String exp) {
          exp.indexOf("true")!= -1|| exp.indexOf("false")!= -1;
 }
 String[] isplit(String args) {
-  if(args.length() == 0 || trim(args).charAt(0) == '#') {
+  if(args.length() == 0 || trim(args).charAt(0) == '#' || args.indexOf("(") == -1) {
     String[] s = {""};
     return s;
   }

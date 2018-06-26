@@ -9,6 +9,7 @@ void test() {
   m.action();
   logger.flush();
   logger.close();
+  println("\n\n");
   run();
 }
 void run() {
@@ -31,7 +32,7 @@ void run() {
       try {
         float a = Float.parseFloat(val);
         float b = Float.parseFloat(rob.getString("val"));
-        if(a - a % .0001 == b - b % .0001) {
+        if(round(a*1000) == round(b*1000)) {
           println(id + "\tpass");
         } else {
           println(id + "\tfail\t" + val + "\t" + rob.getString("val"));

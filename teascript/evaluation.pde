@@ -74,13 +74,14 @@ boolean flookupable(String exp) {
     if(m.floats.get(i).hasKey(exp)) return true;
   }
   if(m.functions.containsKey(removeArgs(exp))) return true;
-  return false;
+  return isMath(exp);
 }
 
 float flookup(String exp) {
   for(int i = m.floats.size() - 1; i >= 0; i--) {
     if(hasVar(exp, i)) return getVar(exp, i);
   }
+  if(isMath(exp)) return doMath(exp);
   return m.functions.get(removeArgs(exp)).dup().execute(exp);
 }
 
