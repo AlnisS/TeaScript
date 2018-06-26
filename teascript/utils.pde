@@ -1,3 +1,30 @@
+boolean isNegative(String exp, int index) {
+  while(--index != -1 && exp.charAt(index) == ' ') {}
+  if(index == -1) return true;
+  switch(exp.charAt(index)) {
+    case '(':
+    case '+':
+    case '-':
+    case '*':
+    case '/':
+    case '|':
+    case '&':
+    case '=':
+    case '>':
+    case '<':
+    case '^':
+    case '!':
+    case '~': return true;
+    default: return false;
+  }
+}
+int notNegative(String exp) {
+  int cand = exp.lastIndexOf("-");
+  while(cand != -1 && isNegative(exp, cand)) {
+    cand = exp.lastIndexOf("-", cand - 1);
+  }
+  return cand;
+}
 void clsap(String[] s) {
   String _ = "list: ";
   for(String a : s) {

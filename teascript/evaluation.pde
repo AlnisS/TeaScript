@@ -11,6 +11,7 @@ boolean beval(String exp) {
   int neq = tstr.lastIndexOf("!=");
   int equ = tstr.lastIndexOf("==");
   int xor = tstr.lastIndexOf("^");
+  int not = tstr.lastIndexOf("!");
   
   int maxmul = max(max(gtr, les), max(gte, lse));
   if(gtr != maxmul) gtr = -1;
@@ -30,6 +31,8 @@ boolean beval(String exp) {
   if (gte != -1) return feval(exp.substring(0, gte)) >= feval(exp.substring(gte+2));
   if (lse != -1) return feval(exp.substring(0, lse)) <= feval(exp.substring(lse+2));
   
+  if(not != -1) return !beval(trim(exp.substring(not+1)));
+  
   return trim(exp).equals("true");
 }
 
@@ -39,7 +42,7 @@ float feval(String exp) {
   
   String tstr = fstring(exp);
   int add = tstr.lastIndexOf("+");
-  int sub = tstr.lastIndexOf("-");
+  int sub = notNegative(tstr);
   int mul = noconpos(tstr, "*", "\\*\\*", "**");
   int div = tstr.lastIndexOf("/");
   int rem = tstr.lastIndexOf("%%");
@@ -59,6 +62,8 @@ float feval(String exp) {
   if (rem != -1)            return feval(exp.substring(0, rem))  %  feval(exp.substring(rem+2));
   if (mod != -1)            return mod(feval(exp.substring(0, mod)),feval(exp.substring(mod+1)));
   if (pow != -1)            return pow(feval(exp.substring(0, pow)),feval(exp.substring(pow+2)));
+  
+  if(tstr.indexOf("-") != -1) return -feval(exp.substring(tstr.indexOf("-") + 1));
   
   float f = 0;
   try{f = Float.parseFloat(exp);} catch(Exception e) {error("FLOATPARSE", "problem parsing "+exp);}
