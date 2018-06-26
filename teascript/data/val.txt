@@ -38,3 +38,12 @@ FB	34
 49	36
 50	true
 51	true
+fac	120
+gcd	34
+wml	128
+bia	495
+bib	252
+sqa	16
+sqb	144
+cua	8
+cub	125

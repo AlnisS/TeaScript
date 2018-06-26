@@ -16,7 +16,10 @@ class Function {
     new Action("UPSCOPE()").execute(this);
     String[] args = isplit(trim(vars));
     for(int i = 1; i < args.length; i++) {
-      new Action("VARIABLE(a"+i+","+args[i]+")").execute(this);
+      new Action("VARIABLE(a_temp_"+i+","+args[i]+")").execute(this);
+    }
+    for(int i = 1; i < args.length; i++) {
+      new Action("VARIABLE(a"+i+",a_temp_"+i+")").execute(this);
     }
     while(++line < actions.length) {
       m.debugline = line - decplace;
