@@ -26,7 +26,7 @@ class Machine {
     for (int i = 0; i < actions.length; i++) {
       Action a = actions[i];
       labeltemp = i;
-      if (a.type == Type.LABEL || a.type == Type.FDEF || a.type == Type.GVAR) a.execute(null);
+      if (a.type == Type.LABEL || a.type == Type.FDEF || a.type == Type.GVAR || a.type == Type.U) a.execute(null);
     }
     new Action("USERFUN(init())").execute(null);
   }

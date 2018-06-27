@@ -1,11 +1,17 @@
 Table log;
 Table val;
+PrintWriter testcon;
+
 void test() {
   testing = true;
   logger = createWriter("data/log.unitlog");
   logger.println("id\tval");
+  testcon = createWriter("data/vals.unitlog");
+  testcon.println("id\tval");
   m = new Machine();
   m.init("units.tea");
+  testcon.flush();
+  testcon.close();
   m.action();
   logger.flush();
   logger.close();
@@ -14,7 +20,7 @@ void test() {
 }
 void run() {
   log = loadTable("log.unitlog", "header, tsv");
-  val = loadTable("val.txt", "header, tsv");
+  val = loadTable("vals.unitlog", "header, tsv");
   for(TableRow row : val.rows()) {
     String id = row.getString("id");
     String val = row.getString("val");

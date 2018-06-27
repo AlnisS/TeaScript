@@ -66,6 +66,10 @@ class Action {
   void GVAR() {
     m.floats.get(0).set(splits[1], feval(splits[2]));
   }
+  void U() {
+    testcon.println(splits[1] + "\t" + splits[2]);
+    type = Type.NONE;
+  }
   void execute(Function f) {
     jumpcall = f;
     switch(type) {
@@ -87,6 +91,7 @@ class Action {
       case BRKPT:    BRKPT();    break;
       case RET:      RET();      break;
       case GVAR:     GVAR();     break;
+      case U:        U();        break;
     }
   }
   Action(String args) {
@@ -110,6 +115,7 @@ class Action {
       case "BRKPT":    type = Type.BRKPT;    break;
       case "RET":      type = Type.RET;      break;
       case "GVAR":     type = Type.GVAR;     break;
+      case "U":        type = Type.U;        break;
       default: if(splits[0].length() == 0) type = Type.NONE;
                else error("NOCOMMAND", "command "+splits[0]+" not found.");
     }
@@ -118,4 +124,4 @@ class Action {
     return thing;
   }
 }
-enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, UNIT, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR}
+enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, UNIT, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR, U}
