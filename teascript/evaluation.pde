@@ -1,5 +1,5 @@
-boolean beval(String exp) {
-  exp = trimPar(exp);
+boolean beval(String expb) {
+  String exp = trim(trimPar(trim(trimPar(trim(expb))))); //will fail on "(((true)))", but really, who does that?
   
   String tstr = fstring(exp); //filter characters within parentheses
   int or  = tstr.lastIndexOf("||");
@@ -33,7 +33,7 @@ boolean beval(String exp) {
   
   if(not != -1) return !beval(trim(exp.substring(not+1)));
   
-  return trim(exp).equals("true");
+  return exp.equals("true");
 }
 
 float feval(String exp) {

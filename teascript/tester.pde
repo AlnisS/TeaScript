@@ -1,13 +1,23 @@
+ArrayList<String> failed;
 void test() {
+  failed = new ArrayList<String>();
   m = new Machine();
   m.init("units.tea");
   m.action();
+  println("\n\n");
+  if(failed.size() != 0) {
+    println("failed tests:");
+    for(String s : failed) {
+      println(s);
+    }
+  } else println("all tests passed!");
 }
 void prettyUnitPass(String id, String a, String b) {
   if(unitPass(a, b)) {
       println(id + "\tpass");
     } else {
       println(id + "\tfail\t" + a + "\t" + b);
+      failed.add(id + "\tfail\t" + a + "\t" + b);
     }
 }
 boolean unitPass(String a, String b) {
