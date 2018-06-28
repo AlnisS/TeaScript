@@ -1,7 +1,5 @@
 Machine m;
 int st;
-PrintWriter logger;
-boolean testing = false;
 void setup() {
   st = millis();
   m = new Machine();

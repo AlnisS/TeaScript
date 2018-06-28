@@ -7,7 +7,6 @@ class Action {
     if(splits.length == 2) splits = new String[]{splits[0], "N", splits[1]};
     String tmp = streval(splits, 2);
     println(splits[1] + "\t" + tmp);
-    if(testing) logger.println(splits[1] + "\t" + tmp);
   }
   void GOTO() {
     jumpcall.GOTO(m.labels.get(splits[1]));
@@ -24,9 +23,6 @@ class Action {
   }
   void END() {
     end();
-  }
-  void UNIT() {
-    
   }
   void NONE() {
     
@@ -67,7 +63,7 @@ class Action {
     m.floats.get(0).set(splits[1], feval(splits[2]));
   }
   void U() {
-    testcon.println(splits[1] + "\t" + splits[2]);
+    prettyUnitPass(str(m.debugline+1), splits[1], streval(splits, 2));
     type = Type.NONE;
   }
   void execute(Function f) {
@@ -79,7 +75,6 @@ class Action {
       case BRANCH:   BRANCH();   break;
       case VARIABLE: VARIABLE(); break;
       case END:      END();      break;
-      case UNIT:     UNIT();     break;
       case NONE:     NONE();     break;
       case UPSCOPE:  UPSCOPE();  break;
       case DOWNSCOPE:DOWNSCOPE();break;
@@ -104,7 +99,6 @@ class Action {
       case "BRANCH":   type = Type.BRANCH;   break;
       case "VARIABLE": type = Type.VARIABLE; break;
       case "END":      type = Type.END;      break;
-      case "UNIT":     type = Type.UNIT;     break;
       case "UPSCOPE":  type = Type.UPSCOPE;  break;
       case "DOWNSCOPE":type = Type.DOWNSCOPE;break;
       case "FDEF":     type = Type.FDEF;     break;
@@ -120,8 +114,5 @@ class Action {
                else error("NOCOMMAND", "command "+splits[0]+" not found.");
     }
   }
-  String g() {
-    return thing;
-  }
 }
-enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, UNIT, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR, U}
+enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR, U}
