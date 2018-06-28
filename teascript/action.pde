@@ -66,6 +66,20 @@ class Action {
     prettyUnitPass(str(m.debugline+1), splits[1], streval(splits, 2));
     type = Type.NONE;
   }
+  void IF() {
+    if(!beval(splits[1])) { //if the contents of the if block should be skipped
+      int ifs = 1;          //move forward until all if blocks are closed
+      while(ifs > 0) {
+        Type t = jumpcall.actions[++jumpcall.line].type;
+        if(t == Type.IF) ifs++;
+        if(t == Type.ENDIF) ifs--;
+      }
+      jumpcall.line--;
+    }
+  }
+  void ENDIF() {
+    
+  }
   void s(Type t, int args) {
     type = t;
     if(splits.length - 1 < args) error("ARGCOUNT", "expected "+args+" arguments, got "+(splits.length-1)+".");
@@ -91,6 +105,8 @@ class Action {
       case RET:      RET();      break;
       case GVAR:     GVAR();     break;
       case U:        U();        break;
+      case IF:       IF();       break;
+      case ENDIF:    ENDIF();    break;
     }
   }
   Action(String args) {
@@ -114,9 +130,11 @@ class Action {
       case "RET":      s(Type.RET, 1);      break;
       case "GVAR":     s(Type.GVAR, 2);     break;
       case "U":        s(Type.U, 2);        break;
+      case "IF":       s(Type.IF, 1);       break;
+      case "ENDIF":    s(Type.ENDIF, 0);    break;
       default: if(splits[0].length() == 0) type = Type.NONE;
                else error("NOCOMMAND", "command "+splits[0]+" not found.");
     }
   }
 }
-enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR, U}
+enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR, U, IF, ENDIF}
