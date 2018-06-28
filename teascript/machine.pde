@@ -31,6 +31,10 @@ class Machine {
     new Action("USERFUN(init())").execute(null);
   }
   void action() {
-    new Action("USERFUN(main())").execute(null);
+    if(debugMode) {
+      new Action("USERFUN(main())").execute(null);
+    } else {
+      try {new Action("USERFUN(main())").execute(null);} catch(AssertionError e) {exit();} catch(Exception e) {exit();}
+    }
   }
 }

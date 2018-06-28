@@ -66,6 +66,10 @@ class Action {
     prettyUnitPass(str(m.debugline+1), splits[1], streval(splits, 2));
     type = Type.NONE;
   }
+  void s(Type t, int args) {
+    type = t;
+    if(splits.length - 1 < args) error("ARGCOUNT", "expected "+args+" arguments, got "+(splits.length-1)+".");
+  }
   void execute(Function f) {
     jumpcall = f;
     switch(type) {
@@ -93,23 +97,23 @@ class Action {
     thing = trim(args);
     splits = isplit(thing);
     switch(splits[0]) {
-      case "PRINT":    type = Type.PRINT;    break;
-      case "GOTO":     type = Type.GOTO;     break;
-      case "LABEL":    type = Type.LABEL;    break;
-      case "BRANCH":   type = Type.BRANCH;   break;
-      case "VARIABLE": type = Type.VARIABLE; break;
-      case "END":      type = Type.END;      break;
-      case "UPSCOPE":  type = Type.UPSCOPE;  break;
-      case "DOWNSCOPE":type = Type.DOWNSCOPE;break;
-      case "FDEF":     type = Type.FDEF;     break;
-      case "EFDEF":    type = Type.EFDEF;    break;
-      case "USERFUN":  type = Type.USERFUN;  break;
-      case "VARSET":   type = Type.VARSET;   break;
-      case "REMVAR":   type = Type.REMVAR;   break;
-      case "BRKPT":    type = Type.BRKPT;    break;
-      case "RET":      type = Type.RET;      break;
-      case "GVAR":     type = Type.GVAR;     break;
-      case "U":        type = Type.U;        break;
+      case "PRINT":    s(Type.PRINT, 1);    break;
+      case "GOTO":     s(Type.GOTO, 1);     break;
+      case "LABEL":    s(Type.LABEL, 1);    break;
+      case "BRANCH":   s(Type.BRANCH, 2);   break;
+      case "VARIABLE": s(Type.VARIABLE, 2); break;
+      case "END":      s(Type.END, 0);      break;
+      case "UPSCOPE":  s(Type.UPSCOPE, 0);  break;
+      case "DOWNSCOPE":s(Type.DOWNSCOPE, 0);break;
+      case "FDEF":     s(Type.FDEF, 1);     break;
+      case "EFDEF":    s(Type.EFDEF, 0);    break;
+      case "USERFUN":  s(Type.USERFUN, 1);  break;
+      case "VARSET":   s(Type.VARSET, 2);   break;
+      case "REMVAR":   s(Type.REMVAR, 1);   break;
+      case "BRKPT":    s(Type.BRKPT, 0);    break;
+      case "RET":      s(Type.RET, 1);      break;
+      case "GVAR":     s(Type.GVAR, 2);     break;
+      case "U":        s(Type.U, 2);        break;
       default: if(splits[0].length() == 0) type = Type.NONE;
                else error("NOCOMMAND", "command "+splits[0]+" not found.");
     }

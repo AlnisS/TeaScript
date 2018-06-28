@@ -47,13 +47,13 @@ int noconpos(String exp, String ok, String badrx, String bad) {
   return -1;
 }
 
-enum Error {MISMATCH, NOVAR, NOCOMMAND, FLOATPARSE}
+enum Error {MISMATCH, NOVAR, NOCOMMAND, FLOATPARSE, ARGCOUNT}
 void error(String s, String message) {
   println("\n\n\nerror "+s+" on line "+(m.debugline+1)+":");
   println(m.rawstrings[m.debugline]);
   println(message);
   println("");
-  exit();
+  assert(debugMode);
 }
 
 boolean il(float a, float b) { //index less, like less than but ignores -1 indices
