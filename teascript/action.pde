@@ -116,6 +116,30 @@ class Action {
     }
     jumpcall.line--;
   }
+  void FOR() {
+    new Action(splits[1]).execute(jumpcall);
+    jumpfor(splits[2]);
+  }
+  void ENDFOR() {
+    int fors = -1;
+    while(fors < 0) {
+      Type t = jumpcall.actions[--jumpcall.line].type;
+      if(t == Type.FOR) fors++;
+      if(t == Type.ENDFOR) fors--;
+    }
+    new Action(jumpcall.actions[jumpcall.line].splits[3]).execute(jumpcall);
+    jumpfor(jumpcall.actions[jumpcall.line].splits[2]);
+  }
+  void jumpfor(String s) {
+    if(!beval(s)) {
+      int fors = 1;
+      while(fors > 0) {
+        Type t = jumpcall.actions[++jumpcall.line].type;
+        if(t == Type.FOR) fors++;
+        if(t == Type.ENDFOR) fors--;
+      }
+    }
+  }
   boolean anytrue() {
     int ifs = -1;
     int tline = jumpcall.line;
@@ -169,6 +193,8 @@ class Action {
       case DOWHILE:  DOWHILE();  break;
       case WHILE:    WHILE();    break;
       case ENDWHILE: ENDWHILE(); break;
+      case FOR:      FOR();      break;
+      case ENDFOR:   ENDFOR();   break;
     }
   }
   Action(String args) {
@@ -200,10 +226,13 @@ class Action {
       case "DOWHILE":  s(Type.DOWHILE, 1);  break;
       case "WHILE":    s(Type.WHILE, 1);    break;
       case "ENDWHILE": s(Type.ENDWHILE, 0); break;
+      case "FOR":      s(Type.FOR, 3);      break;
+      case "ENDFOR":   s(Type.ENDFOR, 0);   break;
       default: if(splits[0].length() == 0) type = Type.NONE;
                else error("NOCOMMAND", "command "+splits[0]+" not found.");
     }
   }
 }
 enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF,
-           VARSET, REMVAR, BRKPT, RET, GVAR, U, IF, ENDIF, ELSE, ELIF, DO, DOWHILE, WHILE, ENDWHILE}
+           VARSET, REMVAR, BRKPT, RET, GVAR, U, IF, ENDIF, ELSE, ELIF, DO, DOWHILE, WHILE, ENDWHILE,
+           FOR, ENDFOR}

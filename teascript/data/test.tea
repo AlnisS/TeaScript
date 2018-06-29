@@ -8,11 +8,9 @@ FDEF(main())
 EFDEF()
 
 FDEF(runner())
-  VARIABLE(i, 0)
-  WHILE(i <= 9)
+  FOR(VARIABLE(i, 0), i <= 9, VARIABLE(i, i+1))
     USERFUN(run(i))
-    VARIABLE(i, i + 1)
-  ENDWHILE()
+  ENDFOR()
 EFDEF()
 
 FDEF(run())
