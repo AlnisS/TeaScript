@@ -67,37 +67,42 @@ class Action {
     type = Type.NONE;
   }
   void IF() {
-    boolean b = jumpcall.ifresults[jumpcall.line] = beval(splits[1]);
-    if(!b) {        //if the contents of the if block should be skipped
-      int ifs = 1;  //move forward until all if blocks are closed
-      while(ifs > 0) {
-        Type t = jumpcall.actions[++jumpcall.line].type;
-        if(t == Type.IF) ifs++;
-        if(t == Type.ENDIF || (ifs == 1 && t == Type.ELSE)) ifs--;
-      }
-      jumpcall.line--;
+    if(!(jumpcall.ifresults[jumpcall.line] = beval(splits[1]))) {
+      skiptoendofif(true);
     }
   }
   void ELSE() {
+    if(anytrue()) {
+      skiptoendofif(false);
+    }
+  }
+  void ELIF() {
+    if(anytrue()) {
+      skiptoendofif(false);
+    } else IF();
+  }
+  void ENDIF() {
+    
+  }
+  boolean anytrue() {
     int ifs = -1;
     int tline = jumpcall.line;
     while(ifs < 0) {
       Type t = jumpcall.actions[--tline].type;
+      if((t == Type.IF || t == Type.ELIF) && ifs == -1 && jumpcall.ifresults[tline]) return true;
       if(t == Type.IF) ifs++;
       if(t == Type.ENDIF) ifs--;
     }
-    if(jumpcall.ifresults[tline]) {
-      ifs = 1;
-      while(ifs > 0) {
-        Type t = jumpcall.actions[++jumpcall.line].type;
-        if(t == Type.IF) ifs++;
-        if(t == Type.ENDIF) ifs--;
-      }
-      jumpcall.line--;
-    }
+    return false;
   }
-  void ENDIF() {
-    
+  void skiptoendofif(boolean inif) {
+    int ifs = 1;
+    while(ifs > 0) {
+      Type t = jumpcall.actions[++jumpcall.line].type;
+      if(t == Type.IF) ifs++;
+      if(t == Type.ENDIF || (inif && (ifs == 1 && (t == Type.ELSE || t == Type.ELIF)))) ifs--;
+    }
+    jumpcall.line--;
   }
   void s(Type t, int args) {
     type = t;
@@ -127,6 +132,7 @@ class Action {
       case IF:       IF();       break;
       case ENDIF:    ENDIF();    break;
       case ELSE:     ELSE();     break;
+      case ELIF:     ELIF();     break;
     }
   }
   Action(String args) {
@@ -153,9 +159,10 @@ class Action {
       case "IF":       s(Type.IF, 1);       break;
       case "ENDIF":    s(Type.ENDIF, 0);    break;
       case "ELSE":     s(Type.ELSE, 0);     break;
+      case "ELIF":     s(Type.ELIF, 1);     break;
       default: if(splits[0].length() == 0) type = Type.NONE;
                else error("NOCOMMAND", "command "+splits[0]+" not found.");
     }
   }
 }
-enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR, U, IF, ENDIF, ELSE}
+enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR, U, IF, ENDIF, ELSE, ELIF}
