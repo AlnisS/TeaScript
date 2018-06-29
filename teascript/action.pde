@@ -84,6 +84,19 @@ class Action {
   void ENDIF() {
     
   }
+  void DO() {
+    
+  }
+  void DOWHILE() {
+    if(beval(splits[1])) {
+      int dos = -1;
+      while(dos < 0) {
+        Type t = jumpcall.actions[--jumpcall.line].type;
+        if(t == Type.DO) dos++;
+        if(t == Type.DOWHILE) dos--;
+      }
+    }
+  }
   boolean anytrue() {
     int ifs = -1;
     int tline = jumpcall.line;
@@ -133,6 +146,8 @@ class Action {
       case ENDIF:    ENDIF();    break;
       case ELSE:     ELSE();     break;
       case ELIF:     ELIF();     break;
+      case DO:       DO();       break;
+      case DOWHILE:  DOWHILE();  break;
     }
   }
   Action(String args) {
@@ -160,9 +175,11 @@ class Action {
       case "ENDIF":    s(Type.ENDIF, 0);    break;
       case "ELSE":     s(Type.ELSE, 0);     break;
       case "ELIF":     s(Type.ELIF, 1);     break;
+      case "DO":       s(Type.DO, 0);       break;
+      case "DOWHILE":  s(Type.DOWHILE, 1);  break;
       default: if(splits[0].length() == 0) type = Type.NONE;
                else error("NOCOMMAND", "command "+splits[0]+" not found.");
     }
   }
 }
-enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR, U, IF, ENDIF, ELSE, ELIF}
+enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR, U, IF, ENDIF, ELSE, ELIF, DO, DOWHILE}
