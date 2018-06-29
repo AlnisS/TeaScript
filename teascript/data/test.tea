@@ -9,10 +9,10 @@ EFDEF()
 
 FDEF(runner())
   VARIABLE(i, 0)
-  DO()
+  WHILE(i <= 9)
     USERFUN(run(i))
     VARIABLE(i, i + 1)
-    DOWHILE(i <= 9)
+  ENDWHILE()
 EFDEF()
 
 FDEF(run())
