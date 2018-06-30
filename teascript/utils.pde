@@ -105,6 +105,16 @@ String removeArgs(String _exp) {
   return res;
 }
 
+String smartTrim(String exp) {
+  String a;
+  String b = new String(exp);
+  do {
+    a = new String(b);
+    b = new String(trimPar(trim(b)));
+  } while(!a.equals(b));
+  return b;
+}
+
 String trimPar(String _exp) {
   String exp = _exp.substring(0);
   int par = 0;

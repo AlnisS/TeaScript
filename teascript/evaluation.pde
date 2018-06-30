@@ -1,5 +1,5 @@
 boolean beval(String expb) {
-  String exp = trim(trimPar(trim(trimPar(trim(expb))))); //will fail on "(((true)))", but really, who does that?
+  String exp = smartTrim(expb);
   
   String tstr = fstring(exp); //filter characters within parentheses
   int or  = tstr.lastIndexOf("||");
@@ -103,11 +103,28 @@ float getVar(String exp, int level) {
 }
 
 boolean isString(String s) {
-  return s.indexOf("\"") != -1;
+  return s.charAt(0) == '"' && s.charAt(s.length()-1) == '"';
 }
 
-String streval(String[] exp, int index) {
-  if (isString(exp[index]))  return exp[index].substring(1, exp[index].length()-1);
-  if (isBoolean(exp[index])) return str(beval(exp[index]));
-  return str(feval(exp[index]));
+String streval(String expb) {
+  String exp = smartTrim(expb);
+  String tstr = fstring(exp);
+  
+  int plus = tstr.lastIndexOf("+");
+  if (plus != -1) return streval(exp.substring(0, plus)) + streval(exp.substring(plus+1));
+  
+  if (tstr.substring(0, 4).equals("str(")) return stringcast(exp.substring(4, exp.length() - 1));
+  
+  return isString(exp) ? exp.substring(1, exp.length()-1) : null;
+}
+
+String stringcast(String expb) {
+  String exp = smartTrim(expb);
+  String tstr = fstring(exp);
+  
+  if (tstr.substring(0, 4).equals("str(")) return stringcast(exp.substring(4, exp.length() - 1));
+  
+  if (isString(exp)) return streval(exp);
+  if (isBoolean(exp)) return str(beval(exp));
+  return str(feval(exp));
 }
