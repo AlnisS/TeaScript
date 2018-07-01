@@ -149,7 +149,7 @@ String streval(String expb) {
   String exp = smartTrim(expb);
   String tstr = fstring(exp);
   int plus = tstr.lastIndexOf("+");
-  if (plus != -1 && isString(exp.substring(plus+1))) return streval(exp.substring(0, plus)) + streval(exp.substring(plus+1));
+  if (plus != -1 && (isString(exp.substring(0, plus)) || isString(exp.substring(plus+1)))) return streval(exp.substring(0, plus)) + streval(exp.substring(plus+1));
     
   if (slookupable(exp)) return slookup(exp);
   if (isRawString(exp)) return exp.substring(1, exp.length()-1);
