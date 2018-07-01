@@ -171,9 +171,12 @@ String[] nsplit(String s, char c) {
   }
   int start = 0;
   for(int i = 0; i <= filtered.length(); i++) {
-    if((i == filtered.length() || filtered.charAt(i) == c) && i > start) {
+    if((i == filtered.length() || (filtered.charAt(i) == c && (i > 0 && filtered.charAt(i-1) != '\\'))) && i > start) {
       result.add(trim(s.substring(start, i)));
       start = i + 1;
+    } else if(i > 0 && filtered.charAt(i-1) == '\\') {
+      s = s.substring(0, i-1) + s.substring(i);
+      filtered = filtered.substring(0, i-1) + filtered.substring(i);
     }
   }
   return result.toArray(new String[result.size()]);
