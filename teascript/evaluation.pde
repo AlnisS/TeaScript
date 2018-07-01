@@ -113,6 +113,23 @@ float getVar(String exp, int level) {
   try{f = m.floats.get(level).get(exp);} catch(Exception e) {error("NOVAR", "no variable "+exp+" found.");}
   return f;
 }
+String[] specialCharsText = {"\\\\", "\\t", "\\n", "\\'"};
+String[] specialChars = {"\\", "\t", "\n", "\""};
+String rawString(String exp, boolean remq) {
+  StringBuilder str = new StringBuilder(exp.substring(int(remq), exp.length()-int(remq)));
+  for(int i = 0; i < str.length() - 1; i++) {
+    String s = str.substring(i, i+2);
+    int f = -1;
+    for(int j = 0; j < specialCharsText.length; j++) {
+      if(s.equals(specialCharsText[j])) f = j;
+    }
+    if(f != -1) {
+      str.delete(i, i + 2);
+      str.insert(i, specialChars[f]);
+    }
+  }
+  return str.toString();
+}
 
 boolean isRawString(String s) {
   return s.charAt(0) == '"' && s.charAt(s.length()-1) == '"';
@@ -152,7 +169,7 @@ String streval(String expb) {
   if (plus != -1 && (isString(exp.substring(0, plus)) || isString(exp.substring(plus+1)))) return streval(exp.substring(0, plus)) + streval(exp.substring(plus+1));
     
   if (slookupable(exp)) return slookup(exp);
-  if (isRawString(exp)) return exp.substring(1, exp.length()-1);
+  if (isRawString(exp)) return rawString(exp, true);
   if (isString(exp)) return streval(exp);
   if (isBoolean(exp)) return str(beval(exp));
   return str(feval(exp));
