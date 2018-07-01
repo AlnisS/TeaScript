@@ -3,6 +3,7 @@ class Machine {
   Action[] actions;
   IntDict labels;
   ArrayList<FloatDict> floats;
+  ArrayList<StringDict> strings;
   int labeltemp;
   HashMap<String, Function> functions;
   String[] rawstrings;
@@ -13,8 +14,10 @@ class Machine {
   void init(String file) {
     labels = new IntDict();
     floats = new ArrayList<FloatDict>();
+    strings = new ArrayList<StringDict>();
     functions = new HashMap<String, Function>();
     floats.add(new FloatDict());
+    strings.add(new StringDict());
     
     rawstrings = loadStrings(file);
     actions = new Action[rawstrings.length];

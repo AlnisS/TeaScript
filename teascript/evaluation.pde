@@ -90,6 +90,18 @@ float flookup(String exp) {
   return m.functions.get(removeArgs(exp)).dup().execute(exp);
 }
 
+boolean hasSVar(String exp, int level) {
+  return m.strings.get(level).hasKey(exp);
+}
+String getSVar(String exp) {
+  return getSVar(exp, m.strings.size() - 1);
+}
+String getSVar(String exp, int level) {
+  String s = null;
+  try{s = m.strings.get(level).get(exp);} catch(Exception e) {error("NOVAR", "no string variable "+exp+" found.");}
+  return s;
+}
+
 boolean hasVar(String exp, int level) {
   return m.floats.get(level).hasKey(exp);
 }
@@ -102,28 +114,45 @@ float getVar(String exp, int level) {
   return f;
 }
 
-boolean isString(String s) {
+boolean isRawString(String s) {
   return s.charAt(0) == '"' && s.charAt(s.length()-1) == '"';
+}
+
+boolean isString(String exp) {
+  String[] tmp = nsplit(exp, '+');
+  for(String s : tmp) {
+    if(slookupable(smartTrim(s))) {
+      return true;
+    }
+  }
+  String t = fstring(exp);
+  return isRawString(exp) || t.indexOf("str(") != -1 || t.indexOf("\"") != -1;
+}
+
+boolean slookupable(String exp) {
+  for(int i = m.strings.size() - 1; i >= 0; i--) {
+    if(m.strings.get(i).hasKey(exp)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+String slookup(String exp) {
+  for(int i = m.strings.size() - 1; i >= 0; i--) {
+    if(hasSVar(exp, i)) return getSVar(exp, i);
+  }
+  return null;
 }
 
 String streval(String expb) {
   String exp = smartTrim(expb);
   String tstr = fstring(exp);
-  
   int plus = tstr.lastIndexOf("+");
-  if (plus != -1) return streval(exp.substring(0, plus)) + streval(exp.substring(plus+1));
-  
-  if (tstr.substring(0, 4).equals("str(")) return stringcast(exp.substring(4, exp.length() - 1));
-  
-  return isString(exp) ? exp.substring(1, exp.length()-1) : null;
-}
-
-String stringcast(String expb) {
-  String exp = smartTrim(expb);
-  String tstr = fstring(exp);
-  
-  if (tstr.substring(0, 4).equals("str(")) return stringcast(exp.substring(4, exp.length() - 1));
-  
+  if (plus != -1 && isString(exp.substring(plus+1))) return streval(exp.substring(0, plus)) + streval(exp.substring(plus+1));
+    
+  if (slookupable(exp)) return slookup(exp);
+  if (isRawString(exp)) return exp.substring(1, exp.length()-1);
   if (isString(exp)) return streval(exp);
   if (isBoolean(exp)) return str(beval(exp));
   return str(feval(exp));

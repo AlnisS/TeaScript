@@ -5,7 +5,7 @@ class Action {
   Function jumpcall;
   void PRINT() {
     if(splits.length == 2) splits = new String[]{splits[0], "N", splits[1]};
-    String tmp = streval("str("+splits[2]+")");
+    String tmp = streval(splits[2]);
     println(splits[1] + "\t" + tmp);
   }
   void GOTO() {
@@ -19,7 +19,11 @@ class Action {
     if (beval(splits[1])) new Action("GOTO("+splits[2]+")").execute(jumpcall);
   }
   void VARIABLE() {
-    m.floats.get(m.floats.size() - 1).set(splits[1], feval(splits[2]));
+    if(!isString(splits[2])) {
+      m.floats.get(m.floats.size() - 1).set(splits[1], feval(splits[2]));
+    } else {
+      m.strings.get(m.strings.size() - 1).set(splits[1], streval(splits[2]));
+    }
   }
   void END() {
     end();
@@ -63,7 +67,7 @@ class Action {
     m.floats.get(0).set(splits[1], feval(splits[2]));
   }
   void U() {
-    prettyUnitPass(str(m.debugline+1), splits[1], streval("str("+splits[2]+")"));
+    prettyUnitPass(str(m.debugline+1), splits[1], streval(splits[2]));
     type = Type.NONE;
   }
   void IF() {

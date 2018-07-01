@@ -154,17 +154,25 @@ String[] isplit(String args) {
   
   String args_b = args.substring(start, args.length() - 1);
   
-  String filtereda = fstring(args_b, "\"", "\"");
-  String filteredb = fstring(args_b, "(",  ")");
-  String filtered = "";
-  for(int i = 0; i < args_b.length(); i++) {
-    if(filtereda.charAt(i) == '#' || filteredb.charAt(i) == '#') filtered += "#";
-    else filtered += args_b.charAt(i);
+  String[] split = nsplit(args_b, ',');
+  for(String s : split) {
+    result.add(s);
   }
-  start = 0;
+  return result.toArray(new String[result.size()]);
+}
+String[] nsplit(String s, char c) {
+  ArrayList<String> result = new ArrayList<String>();
+  String filtereda = fstring(s, "\"", "\"");
+  String filteredb = fstring(s, "(",  ")");
+  String filtered = "";
+  for(int i = 0; i < s.length(); i++) {
+    if(filtereda.charAt(i) == '#' || filteredb.charAt(i) == '#') filtered += "#";
+    else filtered += s.charAt(i);
+  }
+  int start = 0;
   for(int i = 0; i <= filtered.length(); i++) {
-    if((i == filtered.length() || filtered.charAt(i) == ',') && i > start) {
-      result.add(trim(args_b.substring(start, i)));
+    if((i == filtered.length() || filtered.charAt(i) == c) && i > start) {
+      result.add(trim(s.substring(start, i)));
       start = i + 1;
     }
   }
