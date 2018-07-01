@@ -3,7 +3,7 @@ class Function {
   Action[] actions;
   boolean[] ifresults;
   int decplace;  //adjustment to local action space from global action space
-  float ans;
+  String ans;
   
   Function(Action[] _, int __) {
     actions = _;
@@ -13,7 +13,7 @@ class Function {
   Function dup() {
     return new Function(actions, -(decplace+1));
   }
-  float execute(String vars) {
+  String execute(String vars) {
     m.debugline = -1-decplace;
     new Action("UPSCOPE()").execute(this);
     String[] args = isplit(trim(vars));
@@ -32,7 +32,7 @@ class Function {
     line = -1;
     return ans;
   }
-  void RET(float _) {
+  void RET(String _) {
     ans = _;
     line = actions.length;
   }

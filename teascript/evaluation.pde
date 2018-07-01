@@ -87,7 +87,7 @@ float flookup(String exp) {
     if(hasVar(exp, i)) return getVar(exp, i);
   }
   if(isMath(exp)) return doMath(exp);
-  return m.functions.get(removeArgs(exp)).dup().execute(exp);
+  return Float.parseFloat(m.functions.get(removeArgs(exp)).dup().execute(exp));
 }
 
 boolean hasSVar(String exp, int level) {
@@ -143,7 +143,7 @@ boolean isString(String exp) {
     }
   }
   String t = fstring(exp);
-  return isRawString(exp) || t.indexOf("str(") != -1 || t.indexOf("\"") != -1;
+  return isRawString(exp) || t.indexOf("str(") != -1 || t.indexOf("\"") != -1 || m.sfunctions.containsKey(removeArgs(exp));
 }
 
 boolean slookupable(String exp) {
@@ -152,6 +152,7 @@ boolean slookupable(String exp) {
       return true;
     }
   }
+  if(m.sfunctions.containsKey(removeArgs(exp))) return true;
   return false;
 }
 
@@ -159,7 +160,7 @@ String slookup(String exp) {
   for(int i = m.strings.size() - 1; i >= 0; i--) {
     if(hasSVar(exp, i)) return getSVar(exp, i);
   }
-  return null;
+  return m.sfunctions.get(removeArgs(exp)).dup().execute(exp);
 }
 
 String streval(String expb) {

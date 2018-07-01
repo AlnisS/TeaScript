@@ -1,16 +1,18 @@
 FDEF(init())
-  
+  RET(0)
 EFDEF()
 
 FDEF(main())
   USERFUN(runner())
   END()
+  RET(0)
 EFDEF()
 
 FDEF(runner())
   FOR(VARIABLE(i, 0), i <= 9, VARIABLE(i, i+1))
     USERFUN(run(i))
   ENDFOR()
+  RET(0)
 EFDEF()
 
 FDEF(run())
@@ -34,4 +36,5 @@ FDEF(run())
       PRINT("too many!  ah ah ah!")
     ENDIF()
   ENDIF()
+  RET(0)
 EFDEF()

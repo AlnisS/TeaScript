@@ -3,7 +3,7 @@
 #/home/chrx/Programs/processing-3.3.7/processing-java --sketch="/home/chrx/sketchbook/projects/TeaScript/teascript/" --output="/tmp/tmps" --force --run
 
 FDEF(init())
-  
+  RET(0)
 EFDEF()
 FDEF(main())
   U(true,   (  (  true   )  )  )
@@ -128,6 +128,21 @@ FDEF(main())
   U(1.0 test, 0 + .5 + .5 + " test")
   VARIABLE(sep, ", ")
   U(Hello\, World!, "Hello" + sep + "World!")
+  U(this is a string., stringtest())
+  U(Hello\, World!, hello() + world())
+  RET(0)
+EFDEF()
+
+FDEF(hello())
+  RET("Hello, ")
+EFDEF()
+
+FDEF(world())
+  RET("World!")
+EFDEF()
+
+FDEF(stringtest())
+  RET("this is a string.")
 EFDEF()
 
 FDEF(square())

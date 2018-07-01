@@ -6,6 +6,7 @@ class Machine {
   ArrayList<StringDict> strings;
   int labeltemp;
   HashMap<String, Function> functions;
+  HashMap<String, Function> sfunctions;
   String[] rawstrings;
   
   public Machine() {
@@ -16,6 +17,7 @@ class Machine {
     floats = new ArrayList<FloatDict>();
     strings = new ArrayList<StringDict>();
     functions = new HashMap<String, Function>();
+    sfunctions = new HashMap<String, Function>();
     floats.add(new FloatDict());
     strings.add(new StringDict());
     
