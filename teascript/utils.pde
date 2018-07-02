@@ -1,3 +1,6 @@
+int sint(String s) {
+  return int(round(Float.parseFloat(s)));
+}
 boolean isNegative(String exp, int index) {
   while(--index != -1 && exp.charAt(index) == ' ') {}
   if(index == -1) return true;

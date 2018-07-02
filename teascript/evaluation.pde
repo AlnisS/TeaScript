@@ -176,13 +176,14 @@ boolean blookupable(String exp) {
     }
   }
   if(m.bfunctions.containsKey(removeArgs(exp))) return true;
-  return false;
+  return isBoolf(exp);
 }
 
 boolean blookup(String exp) {
   for(int i = m.booleans.size() - 1; i >= 0; i--) {
     if(hasBVar(exp, i)) return getBVar(exp, i);
   }
+  if(isBoolf(exp)) return doBoolf(exp);
   return m.bfunctions.get(removeArgs(exp)).dup().execute(exp).equals("true");
 }
 
@@ -193,13 +194,14 @@ boolean slookupable(String exp) {
     }
   }
   if(m.sfunctions.containsKey(removeArgs(exp))) return true;
-  return false;
+  return isStrf(exp);
 }
 
 String slookup(String exp) {
   for(int i = m.strings.size() - 1; i >= 0; i--) {
     if(hasSVar(exp, i)) return getSVar(exp, i);
   }
+  if(isStrf(exp)) return doStrf(exp);
   return m.sfunctions.get(removeArgs(exp)).dup().execute(exp);
 }
 
