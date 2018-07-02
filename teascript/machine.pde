@@ -8,6 +8,7 @@ class Machine {
   int labeltemp;
   HashMap<String, Function> functions;
   HashMap<String, Function> sfunctions;
+  HashMap<String, Function> bfunctions;
   String[] rawstrings;
   
   public Machine() {
@@ -20,6 +21,7 @@ class Machine {
     booleans = new ArrayList<IntDict>();
     functions = new HashMap<String, Function>();
     sfunctions = new HashMap<String, Function>();
+    bfunctions = new HashMap<String, Function>();
     floats.add(new FloatDict());
     strings.add(new StringDict());
     booleans.add(new IntDict());

@@ -1,6 +1,6 @@
 boolean beval(String expb) {
   String exp = smartTrim(expb);
-  if(blookupable(expb)) return blookup(expb);
+  if(blookupable(exp)) return blookup(exp);
   
   String tstr = fstring(exp);
   int or  = tstr.lastIndexOf("||");
@@ -175,7 +175,7 @@ boolean blookupable(String exp) {
       return true;
     }
   }
-  //if(m.bfunctions.containsKey(removeArgs(exp))) return true;
+  if(m.bfunctions.containsKey(removeArgs(exp))) return true;
   return false;
 }
 
@@ -183,8 +183,7 @@ boolean blookup(String exp) {
   for(int i = m.booleans.size() - 1; i >= 0; i--) {
     if(hasBVar(exp, i)) return getBVar(exp, i);
   }
-  //return m.bfunctions.get(removeArgs(exp)).dup().execute(exp);
-  return false;
+  return m.bfunctions.get(removeArgs(exp)).dup().execute(exp).equals("true");
 }
 
 boolean slookupable(String exp) {

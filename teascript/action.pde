@@ -48,17 +48,20 @@ class Action {
   }
   void FDEF() {
     ArrayList<Action> actions = new ArrayList<Action>();
+    boolean isBoolean = false;
     boolean isString = false;
     boolean isFloat = false;
     for(int i = m.labeltemp+1; m.actions[i].type != Type.EFDEF; i++) {
       actions.add(m.actions[i]);
       if(m.actions[i].type == Type.RET) {
         if(isString(m.actions[i].splits[1])) isString = true;
+        else if(isBoolean(m.actions[i].splits[1])) isBoolean = true;
         else isFloat = true;
       }
     }
     if(isFloat)  m. functions.put(splits[1], new Function(actions.toArray(new Action[actions.size()]), m.labeltemp));
     if(isString) m.sfunctions.put(splits[1], new Function(actions.toArray(new Action[actions.size()]), m.labeltemp));
+    if(isBoolean)m.bfunctions.put(splits[1], new Function(actions.toArray(new Action[actions.size()]), m.labeltemp));
     type = Type.NONE;
   }
   void EFDEF() {
