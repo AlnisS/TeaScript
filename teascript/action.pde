@@ -19,10 +19,12 @@ class Action {
     if (beval(splits[1])) new Action("GOTO("+splits[2]+")").execute(jumpcall);
   }
   void VARIABLE() {
-    if(!isString(splits[2])) {
-      m.floats.get(m.floats.size() - 1).set(splits[1], feval(splits[2]));
-    } else {
+    if(isString(splits[2])) {
       m.strings.get(m.strings.size() - 1).set(splits[1], streval(splits[2]));
+    } else if(isBoolean(splits[2])) {
+      m.booleans.get(m.booleans.size() - 1).set(splits[1], int(streval(splits[2]).equals("true")));
+    } else {
+      m.floats.get(m.floats.size() - 1).set(splits[1], feval(splits[2]));
     }
   }
   void END() {
@@ -33,9 +35,13 @@ class Action {
   }
   void UPSCOPE() {
     m.floats.add(new FloatDict());
+    m.strings.add(new StringDict());
+    m.booleans.add(new IntDict());
   }
   void DOWNSCOPE() {
     m.floats.remove(m.floats.size()-1);
+    m.strings.remove(m.strings.size()-1);
+    m.booleans.remove(m.booleans.size()-1);
   }
   void USERFUN() {
     m.functions.get(removeArgs(splits[1])).dup().execute(splits[1]);

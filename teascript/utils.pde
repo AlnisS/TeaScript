@@ -56,7 +56,7 @@ void error(String s, String message) {
   assert(debugMode);
 }
 
-boolean il(float a, float b) { //index less, like less than but ignores -1 indices
+boolean il(float a, float b) {
   return a < b || b == -1;
 }
 
@@ -137,11 +137,6 @@ String trimPar(String _exp) {
     }
   }
   return exp;
-}
-boolean isBoolean(String exp) {
-  return exp.indexOf(">") != -1  || exp.indexOf("<") != -1 || exp.indexOf("!=") != -1 || exp.indexOf("==") != -1 ||
-         exp.indexOf("||") != -1 || exp.indexOf("&&") != -1|| exp.indexOf(">=") != -1 || exp.indexOf("<=") != -1 ||
-         exp.indexOf("true")!= -1|| exp.indexOf("false")!= -1;
 }
 String[] isplit(String args) {
   if(args.length() == 0 || trim(args).charAt(0) == '#' || args.indexOf("(") == -1) {

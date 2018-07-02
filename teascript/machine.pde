@@ -4,6 +4,7 @@ class Machine {
   IntDict labels;
   ArrayList<FloatDict> floats;
   ArrayList<StringDict> strings;
+  ArrayList<IntDict> booleans;
   int labeltemp;
   HashMap<String, Function> functions;
   HashMap<String, Function> sfunctions;
@@ -16,10 +17,12 @@ class Machine {
     labels = new IntDict();
     floats = new ArrayList<FloatDict>();
     strings = new ArrayList<StringDict>();
+    booleans = new ArrayList<IntDict>();
     functions = new HashMap<String, Function>();
     sfunctions = new HashMap<String, Function>();
     floats.add(new FloatDict());
     strings.add(new StringDict());
+    booleans.add(new IntDict());
     
     rawstrings = loadStrings(file);
     actions = new Action[rawstrings.length];

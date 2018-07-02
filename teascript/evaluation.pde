@@ -1,7 +1,8 @@
 boolean beval(String expb) {
   String exp = smartTrim(expb);
+  if(blookupable(expb)) return blookup(expb);
   
-  String tstr = fstring(exp); //filter characters within parentheses
+  String tstr = fstring(exp);
   int or  = tstr.lastIndexOf("||");
   int and = tstr.lastIndexOf("&&");
   int gtr = noconpos(tstr, ">", ">=", ">=");
@@ -90,6 +91,18 @@ float flookup(String exp) {
   return Float.parseFloat(m.functions.get(removeArgs(exp)).dup().execute(exp));
 }
 
+boolean hasBVar(String exp, int level) {
+  return m.booleans.get(level).hasKey(exp);
+}
+boolean getBVar(String exp) {
+  return getBVar(exp, m.booleans.size() - 1);
+}
+boolean getBVar(String exp, int level) {
+  boolean b = false;
+  try{b = boolean(m.booleans.get(level).get(exp));} catch(Exception e) {error("NOVAR", "no boolean variable "+exp+" found.");}
+  return b;
+}
+
 boolean hasSVar(String exp, int level) {
   return m.strings.get(level).hasKey(exp);
 }
@@ -144,6 +157,34 @@ boolean isString(String exp) {
   }
   String t = fstring(exp);
   return isRawString(exp) || t.indexOf("str(") != -1 || t.indexOf("\"") != -1 || m.sfunctions.containsKey(removeArgs(exp));
+}
+boolean isBoolean(String exp_) {
+  String expb = smartTrim(exp_);
+  
+  if(blookupable(expb)) return true;
+  
+  String exp = fstring(expb);
+
+  return exp.indexOf(">") != -1  || exp.indexOf("<") != -1 || exp.indexOf("!=") != -1 || exp.indexOf("==") != -1 ||
+         exp.indexOf("||") != -1 || exp.indexOf("&&") != -1|| exp.indexOf(">=") != -1 || exp.indexOf("<=") != -1 ||
+         exp.indexOf("true")!= -1|| exp.indexOf("false")!=-1||exp.indexOf("!") != -1;
+}
+boolean blookupable(String exp) {
+  for(int i = m.booleans.size() - 1; i >= 0; i--) {
+    if(m.booleans.get(i).hasKey(exp)) {
+      return true;
+    }
+  }
+  //if(m.bfunctions.containsKey(removeArgs(exp))) return true;
+  return false;
+}
+
+boolean blookup(String exp) {
+  for(int i = m.booleans.size() - 1; i >= 0; i--) {
+    if(hasBVar(exp, i)) return getBVar(exp, i);
+  }
+  //return m.bfunctions.get(removeArgs(exp)).dup().execute(exp);
+  return false;
 }
 
 boolean slookupable(String exp) {
