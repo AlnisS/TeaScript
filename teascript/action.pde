@@ -74,7 +74,7 @@ class Action {
     m.floats.get(m.floats.size() - 1).remove(splits[1]);
   }
   void BRKPT() {
-    print(""); //<>// //<>// //<>// //<>//
+    print(""); //<>//
   }
   void RET() {
     jumpcall.RET(streval(splits[1]));
@@ -150,6 +150,14 @@ class Action {
     new Action(jumpcall.actions[jumpcall.line].splits[3]).execute(jumpcall);
     jumpfor(jumpcall.actions[jumpcall.line].splits[2]);
   }
+  void ARR() {
+    m.farrs.get(0).put(splits[1], new ArrayList<Float>());
+  }
+  void ASET() {
+    ArrayList<Float> fs = m.farrs.get(0).get(splits[1]);
+    while(fs.size() <= feval(splits[2])) fs.add(0.);
+    fs.set(sint(feval (splits[2])), feval(splits[3]));
+  }
   void jumpfor(String s) {
     if(!beval(s)) {
       int fors = 1;
@@ -215,6 +223,8 @@ class Action {
       case ENDWHILE: ENDWHILE(); break;
       case FOR:      FOR();      break;
       case ENDFOR:   ENDFOR();   break;
+      case ARR:      ARR();      break;
+      case ASET:     ASET();     break;
     }
   }
   Action(String args) {
@@ -248,6 +258,8 @@ class Action {
       case "ENDWHILE": s(Type.ENDWHILE, 0); break;
       case "FOR":      s(Type.FOR, 3);      break;
       case "ENDFOR":   s(Type.ENDFOR, 0);   break;
+      case "ARR":      s(Type.ARR, 1);      break;
+      case "ASET":     s(Type.ASET, 3);     break;
       default: if(splits[0].length() == 0) type = Type.NONE;
                else error("NOCOMMAND", "command "+splits[0]+" not found.");
     }
@@ -255,4 +267,4 @@ class Action {
 }
 enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF,
            VARSET, REMVAR, BRKPT, RET, GVAR, U, IF, ENDIF, ELSE, ELIF, DO, DOWHILE, WHILE, ENDWHILE,
-           FOR, ENDFOR}
+           FOR, ENDFOR, ARR, ASET}

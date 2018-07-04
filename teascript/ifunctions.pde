@@ -54,7 +54,7 @@ String doStrf(String exp) {
 String[] maths = {"abs", "ceil", "floor", "floordiv", "min", "max", "round", "random",
                   "exp", "log", "log10", "pow", "sqrt", "sin", "cos", "tan", "asin", "acos",
                   "atan", "atan2", "sinh", "cosh", "tanh", "todeg", "torad", "sq",
-                  "length", "indexOf", "lindexOf", "compTo", "compToic"};
+                  "length", "indexOf", "lindexOf", "compTo", "compToic", "ag"};
 boolean isMath(String exp) {
   String targ = "";
   if(exp.indexOf("(") != -1) targ = exp.substring(0, exp.indexOf("("));
@@ -92,7 +92,8 @@ float doMath(String exp) {
     case "todeg":    return degrees(feval(sp[1]));
     case "torad":    return radians(feval(sp[1]));
     case "sq":       return sq(feval(sp[1]));
-    case "length":   return streval(sp[1]).length();
+    case "length":   if(isString(sp[1])) return streval(sp[1]).length();
+                     else return m.farrs.get(0).get(smartTrim(sp[1])).size();
     case "indexOf":  if(sp.length == 3) {
                        return streval(sp[1]).indexOf(streval(sp[2]));
                      } else {
@@ -105,6 +106,7 @@ float doMath(String exp) {
                      }
     case "compTo":   return streval(sp[1]).compareTo(streval(sp[2]));
     case "compToic": return streval(sp[1]).compareToIgnoreCase(streval(sp[2]));
+    case "ag":       return m.farrs.get(0).get(sp[1]).get(sint(feval(sp[2])));
     default: error("NOCOMMAND", "no math command: "+exp);
   }
   return -1;

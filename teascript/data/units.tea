@@ -167,6 +167,13 @@ FDEF(main())
   U(false, equals("thing 1", "thing 2"))
   U(true, startsWith("yello, statue?", "yell"))
   U(true, endsWith("yello, statue?", "statue?"))
+  
+  ARR(ftest)
+  ASET(ftest, 0, 5)
+  U(5, ag(ftest, 0))
+  ASET(ftest, 1, 2)
+  ASET(ftest, 3, 1)
+  U(4, length(ftest))
   RET(0)
 EFDEF()
 
