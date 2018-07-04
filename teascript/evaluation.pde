@@ -126,6 +126,14 @@ float getVar(String exp, int level) {
   try{f = m.floats.get(level).get(exp);} catch(Exception e) {error("NOVAR", "no variable "+exp+" found.");}
   return f;
 }
+ArrayList<Float> getFArr(String exp) {
+  return getFArr(exp, m.farrs.size() - 1);
+}
+ArrayList<Float> getFArr(String exp, int level) {
+  ArrayList<Float> f = null;
+  try{f = m.farrs.get(level).get(exp);} catch(Exception e) {error("NOVAR", "no float array " + exp + " found.");}
+  return f;
+}
 String[] specialCharsText = {"\\\\", "\\t", "\\n", "\\'"};
 String[] specialChars = {"\\", "\t", "\n", "\""};
 String rawString(String exp, boolean remq) {

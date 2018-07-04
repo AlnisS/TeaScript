@@ -93,7 +93,7 @@ float doMath(String exp) {
     case "torad":    return radians(feval(sp[1]));
     case "sq":       return sq(feval(sp[1]));
     case "length":   if(isString(sp[1])) return streval(sp[1]).length();
-                     else return m.farrs.get(0).get(smartTrim(sp[1])).size();
+                     else return getFArr(smartTrim(sp[1])).size();
     case "indexOf":  if(sp.length == 3) {
                        return streval(sp[1]).indexOf(streval(sp[2]));
                      } else {
@@ -106,7 +106,7 @@ float doMath(String exp) {
                      }
     case "compTo":   return streval(sp[1]).compareTo(streval(sp[2]));
     case "compToic": return streval(sp[1]).compareToIgnoreCase(streval(sp[2]));
-    case "ag":       return m.farrs.get(0).get(sp[1]).get(sint(feval(sp[2])));
+    case "ag":       return getFArr(sp[1]).get(sint(feval(sp[2])));
     default: error("NOCOMMAND", "no math command: "+exp);
   }
   return -1;

@@ -37,11 +37,13 @@ class Action {
     m.floats.add(new FloatDict());
     m.strings.add(new StringDict());
     m.booleans.add(new IntDict());
+    m.farrs.add(new HashMap<String, ArrayList<Float>>());
   }
   void DOWNSCOPE() {
     m.floats.remove(m.floats.size()-1);
     m.strings.remove(m.strings.size()-1);
     m.booleans.remove(m.booleans.size()-1);
+    m.farrs.remove(m.farrs.size()-1);
   }
   void USERFUN() {
     m.functions.get(removeArgs(splits[1])).dup().execute(splits[1]);
@@ -151,12 +153,12 @@ class Action {
     jumpfor(jumpcall.actions[jumpcall.line].splits[2]);
   }
   void ARR() {
-    m.farrs.get(0).put(splits[1], new ArrayList<Float>());
+    m.farrs.get(m.farrs.size() - 1).put(splits[1], new ArrayList<Float>());
   }
   void ASET() {
-    ArrayList<Float> fs = m.farrs.get(0).get(splits[1]);
+    ArrayList<Float> fs = getFArr(splits[1]);
     while(fs.size() <= feval(splits[2])) fs.add(0.);
-    fs.set(sint(feval (splits[2])), feval(splits[3]));
+    fs.set(sint(feval(splits[2])), feval(splits[3]));
   }
   void jumpfor(String s) {
     if(!beval(s)) {
