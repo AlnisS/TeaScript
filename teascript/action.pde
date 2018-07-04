@@ -38,12 +38,16 @@ class Action {
     m.strings.add(new StringDict());
     m.booleans.add(new IntDict());
     m.farrs.add(new HashMap<String, ArrayList<Float>>());
+    m.sarrs.add(new HashMap<String, ArrayList<String>>());
+    m.barrs.add(new HashMap<String, ArrayList<Boolean>>());
   }
   void DOWNSCOPE() {
     m.floats.remove(m.floats.size()-1);
     m.strings.remove(m.strings.size()-1);
     m.booleans.remove(m.booleans.size()-1);
     m.farrs.remove(m.farrs.size()-1);
+    m.sarrs.remove(m.sarrs.size()-1);
+    m.barrs.remove(m.barrs.size()-1);
   }
   void USERFUN() {
     m.functions.get(removeArgs(splits[1])).dup().execute(splits[1]);
@@ -153,12 +157,29 @@ class Action {
     jumpfor(jumpcall.actions[jumpcall.line].splits[2]);
   }
   void ARR() {
-    m.farrs.get(m.farrs.size() - 1).put(splits[1], new ArrayList<Float>());
+    switch(smartTrim(splits[2])) {
+      case "float": m.farrs.get(m.farrs.size() - 1).put(splits[1], new ArrayList<Float>()); return;
+      case "string": m.sarrs.get(m.sarrs.size() - 1).put(splits[1], new ArrayList<String>()); return;
+      case "boolean": m.barrs.get(m.barrs.size() - 1).put(splits[1], new ArrayList<Boolean>()); return;
+      default: return;
+    }
   }
   void ASET() {
-    ArrayList<Float> fs = getFArr(splits[1]);
-    while(fs.size() <= feval(splits[2])) fs.add(0.);
-    fs.set(sint(feval(splits[2])), feval(splits[3]));
+    if(isFArr(splits[1])) {
+      ArrayList<Float> fs = getFArr(splits[1]);
+      while(fs.size() <= feval(splits[2])) fs.add(0.);
+      fs.set(sint(feval(splits[2])), feval(splits[3]));
+    }
+    if(isSArr(splits[1])) {
+      ArrayList<String> fs = getSArr(splits[1]);
+      while(fs.size() <= feval(splits[2])) fs.add("");
+      fs.set(sint(feval(splits[2])), streval(splits[3]));
+    }
+    if(isBArr(splits[1])) {
+      ArrayList<Boolean> fs = getBArr(splits[1]);
+      while(fs.size() <= feval(splits[2])) fs.add(false);
+      fs.set(sint(feval(splits[2])), beval(splits[3]));
+    }
   }
   void jumpfor(String s) {
     if(!beval(s)) {
@@ -260,7 +281,7 @@ class Action {
       case "ENDWHILE": s(Type.ENDWHILE, 0); break;
       case "FOR":      s(Type.FOR, 3);      break;
       case "ENDFOR":   s(Type.ENDFOR, 0);   break;
-      case "ARR":      s(Type.ARR, 1);      break;
+      case "ARR":      s(Type.ARR, 2);      break;
       case "ASET":     s(Type.ASET, 3);     break;
       default: if(splits[0].length() == 0) type = Type.NONE;
                else error("NOCOMMAND", "command "+splits[0]+" not found.");

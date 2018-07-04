@@ -10,6 +10,8 @@ class Machine {
   HashMap<String, Function> sfunctions;
   HashMap<String, Function> bfunctions;
   ArrayList<HashMap<String, ArrayList<Float>>> farrs;
+  ArrayList<HashMap<String, ArrayList<String>>> sarrs;
+  ArrayList<HashMap<String, ArrayList<Boolean>>> barrs;
   String[] rawstrings;
   
   public Machine() {
@@ -24,10 +26,14 @@ class Machine {
     sfunctions = new HashMap<String, Function>();
     bfunctions = new HashMap<String, Function>();
     farrs = new ArrayList<HashMap<String, ArrayList<Float>>>();
+    sarrs = new ArrayList<HashMap<String, ArrayList<String>>>();
+    barrs = new ArrayList<HashMap<String, ArrayList<Boolean>>>();
     floats.add(new FloatDict());
     strings.add(new StringDict());
     booleans.add(new IntDict());
     farrs.add(new HashMap<String, ArrayList<Float>>());
+    sarrs.add(new HashMap<String, ArrayList<String>>());
+    barrs.add(new HashMap<String, ArrayList<Boolean>>());
     
     rawstrings = loadStrings(file);
     actions = new Action[rawstrings.length];

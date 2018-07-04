@@ -126,12 +126,40 @@ float getVar(String exp, int level) {
   try{f = m.floats.get(level).get(exp);} catch(Exception e) {error("NOVAR", "no variable "+exp+" found.");}
   return f;
 }
+
+boolean isFArr(String exp) {
+  return m.farrs.get(m.farrs.size() - 1).containsKey(exp);
+}
 ArrayList<Float> getFArr(String exp) {
   return getFArr(exp, m.farrs.size() - 1);
 }
 ArrayList<Float> getFArr(String exp, int level) {
   ArrayList<Float> f = null;
   try{f = m.farrs.get(level).get(exp);} catch(Exception e) {error("NOVAR", "no float array " + exp + " found.");}
+  return f;
+}
+
+boolean isSArr(String exp) {
+  return m.sarrs.get(m.sarrs.size() - 1).containsKey(exp);
+}
+ArrayList<String> getSArr(String exp) {
+  return getSArr(exp, m.sarrs.size() - 1);
+}
+ArrayList<String> getSArr(String exp, int level) {
+  ArrayList<String> f = null;
+  try{f = m.sarrs.get(level).get(exp);} catch(Exception e) {error("NOVAR", "no string array " + exp + " found.");}
+  return f;
+}
+
+boolean isBArr(String exp) {
+  return m.barrs.get(m.barrs.size() - 1).containsKey(exp);
+}
+ArrayList<Boolean> getBArr(String exp) {
+  return getBArr(exp, m.barrs.size() - 1);
+}
+ArrayList<Boolean> getBArr(String exp, int level) {
+  ArrayList<Boolean> f = null;
+  try{f = m.barrs.get(level).get(exp);} catch(Exception e) {error("NOVAR", "no boolean array " + exp + " found.");}
   return f;
 }
 String[] specialCharsText = {"\\\\", "\\t", "\\n", "\\'"};
