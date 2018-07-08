@@ -194,7 +194,17 @@ FDEF(main())
   U(4, length(btest))
   USERFUN(barrst())
   U(true, bar(btest, 0))
+  
+  U(1.0one, 1 + one(1))
+  U(2.0, 1 + one("one"))
   RET(0)
+EFDEF()
+
+FDEF(one())
+  IF(equals(a1, "one"))
+    RET(1)
+  ELSE()
+    RET("one")
 EFDEF()
 
 FDEF(farrst())
