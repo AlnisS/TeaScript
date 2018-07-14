@@ -116,18 +116,18 @@ class Action {
   void IF() {
     //if the statement fails, skip to the end of the if block (also caches value in the function)
     if(!(jumpcall.ifresults[jumpcall.line] = beval(splits[1]))) {
-      skiptoendofif(true);
+      skiptoendofif();
     }
   }
   void ELSE() {
     //checks if any previous if statments were true, skips if any were
     if(anytrue()) {
-      skiptoendofif(false);
+      skiptoendofif();
     }
   }
   void ELIF() {
     if(anytrue()) {
-      skiptoendofif(false);
+      skiptoendofif();
     } else IF();
   }
   void ENDIF() {
@@ -236,12 +236,12 @@ class Action {
     }
     return false;
   }
-  void skiptoendofif(boolean inif) {
+  void skiptoendofif() {
     int ifs = 1;
     while(ifs > 0) {
       Type t = jumpcall.actions[++jumpcall.line].type;
       if(t == Type.IF) ifs++;
-      if(t == Type.ENDIF || (inif && (ifs == 1 && (t == Type.ELSE || t == Type.ELIF)))) ifs--;
+      if(t == Type.ENDIF || (ifs == 1 && (t == Type.ELSE || t == Type.ELIF))) ifs--;
     }
     jumpcall.line--;
   }
