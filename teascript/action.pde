@@ -1,39 +1,43 @@
 //class which stores a single executable function and handles doing it
 class Action {
-  //raw string from creation
-  String thing;
-  //creation string split into arguments
+  String creationString;
   String[] splits;
   Type type;
-  //function to call back to for line changes, control data, etc.
-  Function jumpcall;
+  Function parentFun;
+  
   void PRINT() {
-    //adds "N" as id if no id given
-    if(splits.length == 2) splits = new String[]{splits[0], "N", splits[1]};
+    if (splits.length < 3) splits = new String[]{splits[0], "N", splits[1]};
     String tmp = streval(splits[2]);
     println(splits[1] + "\t" + tmp);
   }
+  
   void GOTO() {
-    jumpcall.GOTO(m.labels.get(splits[1]));
+    parentFun.GOTO(m.labels.get(splits[1]));
   }
+  
   void LABEL() {
-    //adds a label to the machine's tally and makes the action ignored
     m.labels.set(splits[1], m.labeltemp);
-    type = Type.NONE;
+    deactivate();
   }
+  
   void BRANCH() {
-    //creates a goto and executes it based off of the boolean
-    if (beval(splits[1])) new Action("GOTO("+splits[2]+")").execute(jumpcall);
+    if (beval(splits[1])) new Action("GOTO("+splits[2]+")").execute(parentFun);
   }
+  
+  void setSVar(int level, String name, String value) {
+    m.strings.get(level).set(name, value);
+  }
+  void setBVar(int level, String name, boolean value) {
+    m.booleans.get(level).set(name, int(value));
+  }
+  void setFVar(int level, String name, float value) {
+    m.floats.get(level).set(name, value);
+  }
+  
   void VARIABLE() {
-    //gets the appropriate variable list and sets an entry in the variable hashmap
-    if(isString(splits[2])) {
-      m.strings.get(m.strings.size() - 1).set(splits[1], streval(splits[2]));
-    } else if(isBoolean(splits[2])) {
-      m.booleans.get(m.booleans.size() - 1).set(splits[1], int(streval(splits[2]).equals("true")));
-    } else {
-      m.floats.get(m.floats.size() - 1).set(splits[1], feval(splits[2]));
-    }
+    if     (isString(splits[2]))  setSVar(m.strings.size() - 1,  splits[1], streval(splits[2]));
+    else if(isBoolean(splits[2])) setBVar(m.booleans.size() - 1, splits[1], beval(splits[2]));
+    else setFVar(m.floats.size() - 1, splits[1], feval(splits[2]));
   }
   void END() {
     end();
@@ -60,30 +64,25 @@ class Action {
     m.barrs.remove(m.barrs.size()-1);
   }
   void USERFUN() {
-    //executes a script defined function
     m.functions.get(removeArgs(splits[1])).dup().execute(splits[1]);
   }
   void FDEF() {
-    //defines a function
     ArrayList<Action> actions = new ArrayList<Action>();
     boolean isBoolean = false;
     boolean isString = false;
     boolean isFloat = false;
-    //adds all actions until finds an end function tag
     for(int i = m.labeltemp+1; m.actions[i].type != Type.EFDEF; i++) {
       actions.add(m.actions[i]);
-      //sets return types
       if(m.actions[i].type == Type.RET) {
         if(isString(m.actions[i].splits[1])) isString = true;
         else if(isBoolean(m.actions[i].splits[1])) isBoolean = true;
         else isFloat = true;
       }
     }
-    //adds function to all function lists of types it can return
     if(isFloat)  m. functions.put(splits[1], new Function(actions.toArray(new Action[actions.size()]), m.labeltemp));
     if(isString) m.sfunctions.put(splits[1], new Function(actions.toArray(new Action[actions.size()]), m.labeltemp));
     if(isBoolean)m.bfunctions.put(splits[1], new Function(actions.toArray(new Action[actions.size()]), m.labeltemp));
-    type = Type.NONE;
+    deactivate();
   }
   void EFDEF() {
     
@@ -102,7 +101,7 @@ class Action {
   }
   void RET() {
     //evaluates and returns argument
-    jumpcall.RET(streval(splits[1]));
+    parentFun.RET(streval(splits[1]));
   }
   void GVAR() {
     //adds/sets a global variable (stored over multiple loop cycles of main function)
@@ -111,11 +110,11 @@ class Action {
   void U() {
     //runs a unit test comparing expected and evaluated values
     prettyUnitPass(str(m.debugline+1), splits[1], streval(splits[2]));
-    type = Type.NONE;
+    deactivate();
   }
   void IF() {
     //if the statement fails, skip to the end of the if block (also caches value in the function)
-    if(!(jumpcall.ifresults[jumpcall.line] = beval(splits[1]))) {
+    if(!(parentFun.ifresults[parentFun.line] = beval(splits[1]))) {
       skiptoendofif();
     }
   }
@@ -141,7 +140,7 @@ class Action {
     if(beval(splits[1])) {
       int dos = -1;
       while(dos < 0) {
-        Type t = jumpcall.actions[--jumpcall.line].type;
+        Type t = parentFun.actions[--parentFun.line].type;
         if(t == Type.DO) dos++;
         if(t == Type.DOWHILE) dos--;
       }
@@ -152,7 +151,7 @@ class Action {
     if(!beval(splits[1])) {
       int whiles = 1;
       while(whiles > 0) {
-        Type t = jumpcall.actions[++jumpcall.line].type;
+        Type t = parentFun.actions[++parentFun.line].type;
         if(t == Type.WHILE) whiles++;
         if(t == Type.ENDWHILE) whiles--;
       }
@@ -162,29 +161,29 @@ class Action {
     //jumps back to while for another evaluation
     int whiles = -1;
     while(whiles < 0) {
-      Type t = jumpcall.actions[--jumpcall.line].type;
+      Type t = parentFun.actions[--parentFun.line].type;
       if(t == Type.WHILE) whiles++;
       if(t == Type.ENDWHILE) whiles--;
     }
     //decrements so that while statement is evaluated
-    jumpcall.line--;
+    parentFun.line--;
   }
   void FOR() {
     //does init action
-    new Action(splits[1]).execute(jumpcall);
+    new Action(splits[1]).execute(parentFun);
     jumpfor(splits[2]);
   }
   void ENDFOR() {
     //skips back to beginning of for block
     int fors = -1;
     while(fors < 0) {
-      Type t = jumpcall.actions[--jumpcall.line].type;
+      Type t = parentFun.actions[--parentFun.line].type;
       if(t == Type.FOR) fors++;
       if(t == Type.ENDFOR) fors--;
     }
     //executes increment thing
-    new Action(jumpcall.actions[jumpcall.line].splits[3]).execute(jumpcall);
-    jumpfor(jumpcall.actions[jumpcall.line].splits[2]);
+    new Action(parentFun.actions[parentFun.line].splits[3]).execute(parentFun);
+    jumpfor(parentFun.actions[parentFun.line].splits[2]);
   }
   void ARR() {
     //adds an arraylist of the correct type
@@ -218,7 +217,7 @@ class Action {
     if(!beval(s)) {
       int fors = 1;
       while(fors > 0) {
-        Type t = jumpcall.actions[++jumpcall.line].type;
+        Type t = parentFun.actions[++parentFun.line].type;
         if(t == Type.FOR) fors++;
         if(t == Type.ENDFOR) fors--;
       }
@@ -227,10 +226,10 @@ class Action {
   boolean anytrue() {
     //goes back through jumpcall if result cache and returns true if any are true
     int ifs = -1;
-    int tline = jumpcall.line;
+    int tline = parentFun.line;
     while(ifs < 0) {
-      Type t = jumpcall.actions[--tline].type;
-      if((t == Type.IF || t == Type.ELIF) && ifs == -1 && jumpcall.ifresults[tline]) return true;
+      Type t = parentFun.actions[--tline].type;
+      if((t == Type.IF || t == Type.ELIF) && ifs == -1 && parentFun.ifresults[tline]) return true;
       if(t == Type.IF) ifs++;
       if(t == Type.ENDIF) ifs--;
     }
@@ -239,11 +238,14 @@ class Action {
   void skiptoendofif() {
     int ifs = 1;
     while(ifs > 0) {
-      Type t = jumpcall.actions[++jumpcall.line].type;
+      Type t = parentFun.actions[++parentFun.line].type;
       if(t == Type.IF) ifs++;
       if(t == Type.ENDIF || (ifs == 1 && (t == Type.ELSE || t == Type.ELIF))) ifs--;
     }
-    jumpcall.line--;
+    parentFun.line--;
+  }
+  void deactivate() {
+    type = Type.NONE;
   }
   void s(Type t, int args) {
     //sets up action and errors if not enough arguments
@@ -251,7 +253,7 @@ class Action {
     if(splits.length - 1 < args) error("ARGCOUNT", "expected "+args+" arguments, got "+(splits.length-1)+".");
   }
   void execute(Function f) {
-    jumpcall = f;
+    parentFun = f;
     switch(type) {
       case PRINT:    PRINT();    break;
       case GOTO:     GOTO();     break;
@@ -286,8 +288,8 @@ class Action {
     }
   }
   Action(String args) {
-    thing = trim(args);
-    splits = isplit(thing);
+    creationString = trim(args);
+    splits = isplit(creationString);
     switch(splits[0]) {
       case "PRINT":    s(Type.PRINT, 1);    break;
       case "GOTO":     s(Type.GOTO, 1);     break;
