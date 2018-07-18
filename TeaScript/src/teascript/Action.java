@@ -23,7 +23,7 @@ import static teascript.Utils.smartTrim;
 
 /**
  *
- * @author chrx
+ * @author alnis
  */
 public class Action {
 
@@ -85,7 +85,6 @@ public class Action {
     }
 
     void UPSCOPE() {
-        //adds a level to all variable lists
         m.floats.add(new FloatDict());
         m.strings.add(new StringDict());
         m.booleans.add(new IntDict());
@@ -95,7 +94,6 @@ public class Action {
     }
 
     void DOWNSCOPE() {
-        //removes a level from all variable lists
         m.floats.remove(m.floats.size() - 1);
         m.strings.remove(m.strings.size() - 1);
         m.booleans.remove(m.booleans.size() - 1);
@@ -126,13 +124,16 @@ public class Action {
             }
         }
         if (isFloat) {
-            m.functions.put(splits[1], new Function(actions.toArray(new Action[actions.size()]), m.labeltemp));
+            m.functions.put(splits[1], new Function(
+                    actions.toArray(new Action[actions.size()]), m.labeltemp));
         }
         if (isString) {
-            m.sfunctions.put(splits[1], new Function(actions.toArray(new Action[actions.size()]), m.labeltemp));
+            m.sfunctions.put(splits[1], new Function(
+                    actions.toArray(new Action[actions.size()]), m.labeltemp));
         }
         if (isBoolean) {
-            m.bfunctions.put(splits[1], new Function(actions.toArray(new Action[actions.size()]), m.labeltemp));
+            m.bfunctions.put(splits[1], new Function(
+                    actions.toArray(new Action[actions.size()]), m.labeltemp));
         }
         deactivate();
     }
@@ -142,45 +143,37 @@ public class Action {
     }
 
     void VARSET() {
-        //sets a variable one "scope" up
         m.floats.get(m.floats.size() - 2).set(splits[1], feval(splits[2]));
     }
 
     void REMVAR() {
-        //undefines a variable from this scope
         m.floats.get(m.floats.size() - 1).remove(splits[1]);
     }
 
     void BRKPT() {
-        //breakpoint for debug
         print("");
     }
 
     void RET() {
-        //evaluates and returns argument
         parentFun.RET(streval(splits[1]));
     }
 
     void GVAR() {
-        //adds/sets a global variable (stored over multiple loop cycles of main function)
         m.floats.get(0).set(splits[1], feval(splits[2]));
     }
 
     void U() {
-        //runs a unit test comparing expected and evaluated values
         prettyUnitPass(str(m.debugline + 1), splits[1], streval(splits[2]));
         deactivate();
     }
 
     void IF() {
-        //if the statement fails, skip to the end of the if block (also caches value in the function)
         if (!(parentFun.ifresults[parentFun.line] = beval(splits[1]))) {
             skiptoendofif();
         }
     }
 
     void ELSE() {
-        //checks if any previous if statments were true, skips if any were
         if (anytrue()) {
             skiptoendofif();
         }
@@ -203,7 +196,6 @@ public class Action {
     }
 
     void DOWHILE() {
-        //skips back to do when appropriate
         if (beval(splits[1])) {
             int dos = -1;
             while (dos < 0) {
@@ -219,7 +211,6 @@ public class Action {
     }
 
     void WHILE() {
-        //skips over if condition is false
         if (!beval(splits[1])) {
             int whiles = 1;
             while (whiles > 0) {
@@ -235,7 +226,6 @@ public class Action {
     }
 
     void ENDWHILE() {
-        //jumps back to while for another evaluation
         int whiles = -1;
         while (whiles < 0) {
             Type t = parentFun.actions[--parentFun.line].type;
@@ -246,18 +236,15 @@ public class Action {
                 whiles--;
             }
         }
-        //decrements so that while statement is evaluated
         parentFun.line--;
     }
 
     void FOR() {
-        //does init action
         new Action(splits[1]).execute(parentFun);
         jumpfor(splits[2]);
     }
 
     void ENDFOR() {
-        //skips back to beginning of for block
         int fors = -1;
         while (fors < 0) {
             Type t = parentFun.actions[--parentFun.line].type;
@@ -268,30 +255,26 @@ public class Action {
                 fors--;
             }
         }
-        //executes increment thing
-        new Action(parentFun.actions[parentFun.line].splits[3]).execute(parentFun);
+        new Action(parentFun.actions[parentFun.line].splits[3])
+                .execute(parentFun);
         jumpfor(parentFun.actions[parentFun.line].splits[2]);
     }
 
     void ARR() {
-        //adds an arraylist of the correct type
         switch (smartTrim(splits[2])) {
             case "float":
-                m.farrs.get(m.farrs.size() - 1).put(splits[1], new ArrayList<Float>());
+                m.farrs.get(m.farrs.size()-1).put(splits[1], new ArrayList<>());
                 return;
             case "string":
-                m.sarrs.get(m.sarrs.size() - 1).put(splits[1], new ArrayList<String>());
+                m.sarrs.get(m.sarrs.size()-1).put(splits[1], new ArrayList<>());
                 return;
             case "boolean":
-                m.barrs.get(m.barrs.size() - 1).put(splits[1], new ArrayList<Boolean>());
-                return;
+                m.barrs.get(m.barrs.size()-1).put(splits[1], new ArrayList<>());
             default:
-                return;
         }
     }
 
     void ASET() {
-        //gets array and sets item while adding missing elements
         if (isFArr(splits[1])) {
             ArrayList<Float> fs = getFArr(splits[1]);
             while (fs.size() <= feval(splits[2])) {
@@ -316,7 +299,6 @@ public class Action {
     }
 
     void jumpfor(String s) {
-        //evaluates boolean and skips if needed
         if (!beval(s)) {
             int fors = 1;
             while (fors > 0) {
@@ -332,12 +314,12 @@ public class Action {
     }
 
     boolean anytrue() {
-        //goes back through jumpcall if result cache and returns true if any are true
         int ifs = -1;
         int tline = parentFun.line;
         while (ifs < 0) {
             Type t = parentFun.actions[--tline].type;
-            if ((t == Type.IF || t == Type.ELIF) && ifs == -1 && parentFun.ifresults[tline]) {
+            if ((t == Type.IF || t == Type.ELIF) && ifs == -1
+                    && parentFun.ifresults[tline]) {
                 return true;
             }
             if (t == Type.IF) {
@@ -357,7 +339,8 @@ public class Action {
             if (t == Type.IF) {
                 ifs++;
             }
-            if (t == Type.ENDIF || (ifs == 1 && (t == Type.ELSE || t == Type.ELIF))) {
+            if (t == Type.ENDIF || (ifs == 1 && (t == Type.ELSE
+                    || t == Type.ELIF))) {
                 ifs--;
             }
         }
@@ -368,11 +351,11 @@ public class Action {
         type = Type.NONE;
     }
 
-    void s(Type t, int args) {
-        //sets up action and errors if not enough arguments
+    final void s(Type t, int args) {
         type = t;
         if (splits.length - 1 < args) {
-            error("ARGCOUNT", "expected " + args + " arguments, got " + (splits.length - 1) + ".");
+            error("ARGCOUNT", "expected " + args + " arguments, got "
+                    + (splits.length - 1) + ".");
         }
     }
 
@@ -572,7 +555,8 @@ public class Action {
         }
     }
     
-    enum Type {PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE, USERFUN, FDEF, EFDEF,
-           VARSET, REMVAR, BRKPT, RET, GVAR, U, IF, ENDIF, ELSE, ELIF, DO, DOWHILE, WHILE, ENDWHILE,
-           FOR, ENDFOR, ARR, ASET}
+    enum Type {
+        PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE,
+        USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR, U, IF, ENDIF,
+        ELSE, ELIF, DO, DOWHILE, WHILE, ENDWHILE, FOR, ENDFOR, ARR, ASET}
 }

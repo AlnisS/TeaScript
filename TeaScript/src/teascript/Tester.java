@@ -12,7 +12,7 @@ import static teascript.TeaScript.m;
 
 /**
  *
- * @author chrx
+ * @author alnis
  */
 public class Tester {
 
@@ -24,7 +24,7 @@ public class Tester {
         m.init("units.tea");
         m.action();
         println("\n\n");
-        if (failed.size() != 0) {
+        if (!failed.isEmpty()) {
             println("failed tests:");
             for (String s : failed) {
                 println(s);
@@ -50,11 +50,7 @@ public class Tester {
         try {
             float fa = Float.parseFloat(a);
             float fb = Float.parseFloat(b);
-            if (round(fa * 1000) == round(fb * 1000)) {
-                return true;
-            } else {
-                return false;
-            }
+            return round(fa * 1000) == round(fb * 1000);
         } catch (Exception e) {
             return false;
         }

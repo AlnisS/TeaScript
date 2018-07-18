@@ -8,7 +8,6 @@ import static teascript.IFunctions.doMath;
 import static teascript.IFunctions.isMath;
 import static teascript.TeaScript.m;
 import static teascript.Utils.*;
-import java.lang.StringBuilder;
 import static processing.core.PApplet.str;
 import static teascript.IFunctions.doBoolf;
 import static teascript.IFunctions.doStrf;
@@ -57,7 +56,7 @@ public class Evaluator {
             return beval(exp.substring(0, or)) || beval(exp.substring(or + 2));
         }
         if (and != -1) {
-            return beval(exp.substring(0, and)) && beval(exp.substring(and + 2));
+            return beval(exp.substring(0, and)) && beval(exp.substring(and+2));
         }
         if (xor != -1) {
             return beval(exp.substring(0, xor)) ^ beval(exp.substring(xor + 1));
@@ -77,10 +76,10 @@ public class Evaluator {
             return feval(exp.substring(0, les)) < feval(exp.substring(les + 1));
         }
         if (gte != -1) {
-            return feval(exp.substring(0, gte)) >= feval(exp.substring(gte + 2));
+            return feval(exp.substring(0, gte)) >= feval(exp.substring(gte+2));
         }
         if (lse != -1) {
-            return feval(exp.substring(0, lse)) <= feval(exp.substring(lse + 2));
+            return feval(exp.substring(0, lse)) <= feval(exp.substring(lse+2));
         }
 
         if (not != -1) {
@@ -135,10 +134,12 @@ public class Evaluator {
             return feval(exp.substring(0, rem)) % feval(exp.substring(rem + 2));
         }
         if (mod != -1) {
-            return mod(feval(exp.substring(0, mod)), feval(exp.substring(mod + 1)));
+            return mod(feval(exp.substring(0, mod)),
+                    feval(exp.substring(mod + 1)));
         }
         if (pow != -1) {
-            return pow(feval(exp.substring(0, pow)), feval(exp.substring(pow + 2)));
+            return pow(feval(exp.substring(0, pow)),
+                    feval(exp.substring(pow + 2)));
         }
 
         if (tstr.contains("-")) {
@@ -179,7 +180,8 @@ public class Evaluator {
         if (isMath(exp)) {
             return doMath(exp);
         }
-        return Float.parseFloat(m.functions.get(removeArgs(exp)).dup().execute(exp));
+        return Float.parseFloat(m.functions.get(removeArgs(exp))
+                .dup().execute(exp));
     }
 
     static boolean hasBVar(String exp, int level) {
@@ -193,7 +195,8 @@ public class Evaluator {
     static boolean getBVar(String exp, int level) {
         boolean b = false;
         try {
-            b = m.booleans.get(level).get(exp) == 1;} catch (Exception e) {
+            b = m.booleans.get(level).get(exp) == 1;
+        } catch (Exception e) {
             error("NOVAR", "no boolean variable " + exp + " found.");
         }
         return b;
@@ -323,7 +326,8 @@ public class Evaluator {
             }
         }
         String t = fstring(exp);
-        return isRawString(exp) || t.indexOf("str(") != -1 || t.indexOf("\"") != -1 || m.sfunctions.containsKey(removeArgs(exp));
+        return isRawString(exp) || t.contains("str(") || t.contains("\"")
+                || m.sfunctions.containsKey(removeArgs(exp));
     }
 
     static boolean isBoolean(String exp_) {
@@ -335,9 +339,11 @@ public class Evaluator {
 
         String exp = fstring(expb);
 
-        return exp.indexOf(">") != -1 || exp.indexOf("<") != -1 || exp.indexOf("!=") != -1 || exp.indexOf("==") != -1
-                || exp.indexOf("||") != -1 || exp.indexOf("&&") != -1 || exp.indexOf(">=") != -1 || exp.indexOf("<=") != -1
-                || exp.indexOf("true") != -1 || exp.indexOf("false") != -1 || exp.indexOf("!") != -1;
+        return exp.contains(">") || exp.contains("<") || exp.contains("!=")
+                || exp.contains("==") || exp.contains("||")
+                || exp.contains("&&") || exp.contains(">=")
+                || exp.contains("<=") || exp.contains("true")
+                || exp.contains("false") || exp.contains("!");
     }
 
     static boolean blookupable(String exp) {
@@ -361,7 +367,8 @@ public class Evaluator {
         if (isBoolf(exp)) {
             return doBoolf(exp);
         }
-        return m.bfunctions.get(removeArgs(exp)).dup().execute(exp).equals("true");
+        return m.bfunctions.get(removeArgs(exp))
+                .dup().execute(exp).equals("true");
     }
 
     static boolean slookupable(String exp) {
@@ -392,8 +399,10 @@ public class Evaluator {
         String exp = smartTrim(expb);
         String tstr = fstring(exp);
         int plus = tstr.lastIndexOf("+");
-        if (plus != -1 && (isString(exp.substring(0, plus)) || isString(exp.substring(plus + 1)))) {
-            return streval(exp.substring(0, plus)) + streval(exp.substring(plus + 1));
+        if (plus != -1 && (isString(exp.substring(0, plus))
+                || isString(exp.substring(plus + 1)))) {
+            return streval(exp.substring(0, plus))
+                    + streval(exp.substring(plus + 1));
         }
 
         if (slookupable(exp)) {

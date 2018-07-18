@@ -31,15 +31,16 @@ import static processing.core.PApplet.tan;
 
 /**
  *
- * @author chrx
+ * @author alnis
  */
 public class IFunctions {
 
-    static String[] boolfs = {"isEmpty", "equals", "equalsic", "startsWith", "endsWith", "bar"};
+    static String[] boolfs = {"isEmpty", "equals", "equalsic", "startsWith",
+        "endsWith", "bar"};
 
     static boolean isBoolf(String exp) {
         String targ = "";
-        if (exp.indexOf("(") != -1) {
+        if (exp.contains("(")) {
             targ = exp.substring(0, exp.indexOf("("));
         }
         for (String s : boolfs) {
@@ -75,11 +76,12 @@ public class IFunctions {
         return false;
     }
 
-    static String[] strfs = {"substring", "lowercase", "uppercase", "trim", "trimPar", "smartTrim", "sar"};
+    static String[] strfs = {"substring", "lowercase", "uppercase", "trim",
+        "trimPar", "smartTrim", "sar"};
 
     static boolean isStrf(String exp) {
         String targ = "";
-        if (exp.indexOf("(") != -1) {
+        if (exp.contains("(")) {
             targ = exp.substring(0, exp.indexOf("("));
         }
         for (String s : strfs) {
@@ -97,7 +99,8 @@ public class IFunctions {
                 if (sp.length == 3) {
                     return streval(sp[1]).substring(sint(streval(sp[2])));
                 } else {
-                    return streval(sp[1]).substring(sint(streval(sp[2])), sint(streval(sp[3])));
+                    return streval(sp[1]).substring(sint(streval(sp[2])),
+                            sint(streval(sp[3])));
                 }
             case "lowercase":
                 return streval(sp[1]).toLowerCase();
@@ -117,14 +120,15 @@ public class IFunctions {
         return null;
     }
 
-    static String[] maths = {"abs", "ceil", "floor", "floordiv", "min", "max", "round", "random",
-        "exp", "log", "log10", "pow", "sqrt", "sin", "cos", "tan", "asin", "acos",
-        "atan", "atan2", "sinh", "cosh", "tanh", "todeg", "torad", "sq",
-        "length", "indexOf", "lindexOf", "compTo", "compToic", "far"};
+    static String[] maths = {"abs", "ceil", "floor", "floordiv", "min", "max",
+        "round", "random", "exp", "log", "log10", "pow", "sqrt", "sin", "cos",
+        "tan", "asin", "acos", "atan", "atan2", "sinh", "cosh", "tanh", "todeg",
+        "torad", "sq", "length", "indexOf", "lindexOf", "compTo", "compToic",
+        "far"};
 
     static boolean isMath(String exp) {
         String targ = "";
-        if (exp.indexOf("(") != -1) {
+        if (exp.contains("(")) {
             targ = exp.substring(0, exp.indexOf("("));
         }
         for (String s : maths) {
@@ -153,7 +157,9 @@ public class IFunctions {
             case "round":
                 return round(feval(sp[1]));
             case "random":
-                return random(feval(sp[1]), feval(sp[2]));
+                float min = feval(sp[1]);
+                float max = feval(sp[2]);
+                return (float) (min + Math.random() * (max - min));
             case "exp":
                 return exp(feval(sp[1]));
             case "log":
@@ -183,7 +189,7 @@ public class IFunctions {
             case "cosh":
                 return (exp(feval(sp[1])) + exp(-feval(sp[1]))) / 2;
             case "tanh":
-                return (exp(2 * feval(sp[1])) - 1) / (exp(2 * feval(sp[1])) + 1);
+                return (exp(2*feval(sp[1])) - 1) / (exp(2*feval(sp[1])) + 1);
             case "todeg":
                 return degrees(feval(sp[1]));
             case "torad":
@@ -207,13 +213,15 @@ public class IFunctions {
                 if (sp.length == 3) {
                     return streval(sp[1]).indexOf(streval(sp[2]));
                 } else {
-                    return streval(sp[1]).indexOf(streval(sp[2]), sint(streval(sp[3])));
+                    return streval(sp[1]).indexOf(streval(sp[2]),
+                            sint(streval(sp[3])));
                 }
             case "lindexOf":
                 if (sp.length == 3) {
                     return streval(sp[1]).lastIndexOf(streval(sp[2]));
                 } else {
-                    return streval(sp[1]).lastIndexOf(streval(sp[2]), sint(streval(sp[3])));
+                    return streval(sp[1]).lastIndexOf(streval(sp[2]),
+                            sint(streval(sp[3])));
                 }
             case "compTo":
                 return streval(sp[1]).compareTo(streval(sp[2]));
@@ -225,9 +233,5 @@ public class IFunctions {
                 error("NOCOMMAND", "no math command: " + exp);
         }
         return -1;
-    }
-
-    private static float random(float feval, float feval0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

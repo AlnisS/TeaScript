@@ -6,7 +6,7 @@ import static teascript.Utils.isplit;
 
 /**
  *
- * @author chrx
+ * @author alnis
  */
 public class Function {
 
@@ -16,9 +16,9 @@ public class Function {
     int decplace;  //adjustment to local action space from global action space
     String ans;
 
-    Function(Action[] _, int __) {
-        actions = _;
-        decplace = -1 - __;
+    Function(Action[] actions, int line) {
+        this.actions = actions;
+        decplace = -1 - line;
         ifresults = new boolean[actions.length];
     }
 
@@ -31,7 +31,7 @@ public class Function {
         new Action("UPSCOPE()").execute(this);
         String[] args = isplit(trim(vars));
         for (int i = 1; i < args.length; i++) {
-            new Action("VARIABLE(a_temp_" + i + "," + args[i] + ")").execute(this);
+            new Action("VARIABLE(a_temp_"+i+"," + args[i] + ")").execute(this);
         }
         for (int i = 1; i < args.length; i++) {
             new Action("VARIABLE(a" + i + ",a_temp_" + i + ")").execute(this);
@@ -46,8 +46,8 @@ public class Function {
         return ans;
     }
 
-    void RET(String _) {
-        ans = _;
+    void RET(String ans) {
+        this.ans = ans;
         line = actions.length;
     }
 

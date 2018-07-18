@@ -7,8 +7,8 @@ package teascript;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import static processing.core.PApplet.println;
 import static processing.core.PApplet.round;
 import static processing.core.PApplet.trim;
@@ -29,7 +29,8 @@ public class Utils {
     }
 
     static boolean isNegative(String exp, int index) {
-        while (--index != -1 && exp.charAt(index) == ' ') {}
+        while (--index != -1 && exp.charAt(index) == ' ') {
+        }
         if (index == -1) {
             return true;
         }
@@ -131,7 +132,8 @@ public class Utils {
             }
         }
         if (!o || par != 0) {
-            error("MISMATCH", "mismatch on " + exp + " with o " + splito + " and c " + splitc);
+            error("MISMATCH", "mismatch on " + exp + " with o " + splito
+                    + " and c " + splitc);
         }
         char[] tmp = exp.toCharArray();
         for (int j = 0; j < tmp.length; j++) {
@@ -155,10 +157,10 @@ public class Utils {
 
     static String smartTrim(String exp) {
         String a;
-        String b = new String(exp);
+        String b = exp;
         do {
-            a = new String(b);
-            b = new String(trimPar(trim(b)));
+            a = b;
+            b = trimPar(trim(b));
         } while (!a.equals(b));
         return b;
     }
@@ -183,7 +185,8 @@ public class Utils {
             }
         }
 
-        while (exp.length() != 0 && exp.charAt(0) == '(' && exp.charAt(exp.length() - 1) == ')' && ok) {
+        while (exp.length() != 0 && exp.charAt(0) == '('
+                && exp.charAt(exp.length() - 1) == ')' && ok) {
             exp = exp.substring(1, exp.length() - 1);
             par = 0;
             for (int i = 1; i < exp.length() - 1; i++) {
@@ -202,7 +205,8 @@ public class Utils {
     }
 
     static String[] isplit(String args) {
-        if (args.length() == 0 || trim(args).charAt(0) == '#' || args.indexOf("(") == -1) {
+        if (args.length() == 0 || trim(args).charAt(0) == '#'
+                || !args.contains("(")) {
             String[] s = {""};
             return s;
         }
@@ -213,14 +217,12 @@ public class Utils {
         String args_b = args.substring(start, args.length() - 1);
 
         String[] split = nsplit(args_b, ',');
-        for (String s : split) {
-            result.add(s);
-        }
+        result.addAll(Arrays.asList(split));
         return result.toArray(new String[result.size()]);
     }
 
     static String[] nsplit(String s, char c) {
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
         String filtereda = fstring(s, "\"", "\"");
         String filteredb = fstring(s, "(", ")");
         String filtered = "";
@@ -233,7 +235,9 @@ public class Utils {
         }
         int start = 0;
         for (int i = 0; i <= filtered.length(); i++) {
-            if ((i == filtered.length() || (filtered.charAt(i) == c && (i > 0 && filtered.charAt(i - 1) != '\\'))) && i > start) {
+            if ((i == filtered.length() || (filtered.charAt(i) == c
+                    && (i > 0 && filtered.charAt(i - 1) != '\\')))
+                    && i > start) {
                 result.add(trim(s.substring(start, i)));
                 start = i + 1;
             } else if (i > 0 && filtered.charAt(i - 1) == '\\') {
@@ -243,17 +247,19 @@ public class Utils {
         }
         return result.toArray(new String[result.size()]);
     }
-    
+
     static String[] loadStrings(File file) {
         try {
             FileReader fileReader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            ArrayList<String> lines = new ArrayList<>();
-            String line = null;
-            while ((line = bufferedReader.readLine()) != null) {
-                lines.add(line);
+            ArrayList<String> lines;
+            try (BufferedReader bufferedReader =
+                    new BufferedReader(fileReader)) {
+                lines = new ArrayList<>();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    lines.add(line);
+                }
             }
-            bufferedReader.close();
             return lines.toArray(new String[lines.size()]);
         } catch (Exception e) {
             println(e.toString());

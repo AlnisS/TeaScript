@@ -8,7 +8,6 @@ package teascript;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import static processing.core.PApplet.println;
 import processing.data.FloatDict;
 import processing.data.IntDict;
 import processing.data.StringDict;
@@ -18,7 +17,7 @@ import static teascript.Utils.loadStrings;
 
 /**
  *
- * @author chrx
+ * @author alnis
  */
 public class Machine {
 
@@ -85,9 +84,7 @@ public class Machine {
         } else {
             try {
                 new Action("USERFUN(main())").execute(null);
-            } catch (AssertionError e) {
-                //exit();
-            } catch (Exception e) {
+            } catch (AssertionError | Exception e) {
                 //exit();
             }
         }
