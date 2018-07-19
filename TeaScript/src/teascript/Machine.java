@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package teascript;
 
 import java.io.File;
@@ -15,10 +10,6 @@ import static teascript.Action.Type.*;
 import static teascript.TeaScript.*;
 import static teascript.Utils.loadStrings;
 
-/**
- *
- * @author alnis
- */
 public class Machine {
 
     int debugline;

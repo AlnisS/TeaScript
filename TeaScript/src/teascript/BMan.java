@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package teascript;
 
 import java.util.ArrayList;
@@ -12,10 +7,6 @@ import static teascript.SMan.streval;
 import static teascript.TeaScript.m;
 import static teascript.Utils.*;
 
-/**
- *
- * @author alnis
- */
 public class BMan {
     
     static boolean beval(String expb) {

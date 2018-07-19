@@ -1,28 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package teascript;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import processing.data.*;
-import static processing.core.PApplet.print;
-import static processing.core.PApplet.println;
-import static processing.core.PApplet.str;
-import static processing.core.PApplet.trim;
 import static teascript.TeaScript.m;
 import static teascript.Tester.prettyUnitPass;
 import static teascript.BMan.*;
 import static teascript.FMan.*;
 import static teascript.SMan.*;
 import static teascript.Utils.*;
+import static processing.core.PApplet.print;
+import static processing.core.PApplet.println;
+import static processing.core.PApplet.str;
+import static processing.core.PApplet.trim;
 
-/**
- *
- * @author alnis
- */
 public class Action {
 
     String creationString;

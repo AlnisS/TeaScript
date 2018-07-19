@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package teascript;
 
 import java.util.ArrayList;
@@ -13,10 +8,6 @@ import static teascript.FMan.feval;
 import static teascript.BMan.isBoolean;
 import static teascript.BMan.beval;
 
-/**
- *
- * @author alnis
- */
 public class SMan {
     
     static String streval(String expb) {
