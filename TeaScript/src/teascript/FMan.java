@@ -5,121 +5,150 @@
  */
 package teascript;
 
-import static java.lang.Float.max;
-import static java.lang.Float.min;
-import static processing.core.PApplet.abs;
-import static processing.core.PApplet.acos;
-import static processing.core.PApplet.asin;
-import static processing.core.PApplet.atan;
-import static processing.core.PApplet.atan2;
-import static processing.core.PApplet.ceil;
-import static processing.core.PApplet.cos;
-import static processing.core.PApplet.degrees;
-import static processing.core.PApplet.exp;
-import static processing.core.PApplet.floor;
-import static processing.core.PApplet.round;
-import static processing.core.PApplet.trim;
-import static teascript.Evaluator.*;
+import java.util.ArrayList;
+import static processing.core.PApplet.*;
+import static teascript.BMan.*;
+import static teascript.SMan.*;
+import static teascript.TeaScript.m;
 import static teascript.Utils.*;
-import static processing.core.PApplet.log;
-import static processing.core.PApplet.pow;
-import static processing.core.PApplet.radians;
-import static processing.core.PApplet.sin;
-import static processing.core.PApplet.sq;
-import static processing.core.PApplet.sqrt;
-import static processing.core.PApplet.tan;
 
 /**
  *
  * @author alnis
  */
-public class IFunctions {
-
-    static String[] boolfs = {"isEmpty", "equals", "equalsic", "startsWith",
-        "endsWith", "bar"};
-
-    static boolean isBoolf(String exp) {
-        String targ = "";
-        if (exp.contains("(")) {
-            targ = exp.substring(0, exp.indexOf("("));
+public class FMan {
+    
+    static float feval(String exp) {
+        exp = trim(trimPar(trim(exp)));
+        if (flookupable(exp)) {
+            return flookup(exp);
         }
-        for (String s : boolfs) {
-            if (s.equals(targ)) {
+
+        String tstr = fstring(exp);
+        int add = tstr.lastIndexOf("+");
+        int sub = notNegative(tstr);
+        int mul = noconpos(tstr, "*", "\\*\\*", "**");
+        int div = tstr.lastIndexOf("/");
+        int rem = tstr.lastIndexOf("%%");
+        int mod = noconpos(tstr, "%", "%%", "%%");
+        int pow = tstr.lastIndexOf("**");
+
+        int maxmul = max(max(mul, div), max(rem, mod));
+        if (mul != maxmul) {
+            mul = -1;
+        }
+        if (div != maxmul) {
+            div = -1;
+        }
+        if (rem != maxmul) {
+            rem = -1;
+        }
+        if (mod != maxmul) {
+            mod = -1;
+        }
+
+        if (add != -1 && add > sub) {
+            return feval(exp.substring(0, add)) + feval(exp.substring(add + 1));
+        }
+        if (sub != -1 && sub > add) {
+            return feval(exp.substring(0, sub)) - feval(exp.substring(sub + 1));
+        }
+        if (mul != -1) {
+            return feval(exp.substring(0, mul)) * feval(exp.substring(mul + 1));
+        }
+        if (div != -1) {
+            return feval(exp.substring(0, div)) / feval(exp.substring(div + 1));
+        }
+        if (rem != -1) {
+            return feval(exp.substring(0, rem)) % feval(exp.substring(rem + 2));
+        }
+        if (mod != -1) {
+            return mod(feval(exp.substring(0, mod)),
+                    feval(exp.substring(mod + 1)));
+        }
+        if (pow != -1) {
+            return pow(feval(exp.substring(0, pow)),
+                    feval(exp.substring(pow + 2)));
+        }
+
+        if (tstr.contains("-")) {
+            return -feval(exp.substring(tstr.indexOf("-") + 1));
+        }
+
+        float f = 0;
+        try {
+            f = Float.parseFloat(exp);
+        } catch (Exception e) {
+            error("FLOATPARSE", "problem parsing " + exp);
+        }
+        return f;
+    }
+    
+    static boolean flookupable(String exp) {
+        for (int i = m.floats.size() - 1; i >= 0; i--) {
+            if (m.floats.get(i).hasKey(exp)) {
                 return true;
             }
         }
-        return false;
-    }
-
-    static boolean doBoolf(String exp) {
-        String[] sp = isplit(exp);
-        switch (sp[0]) {
-            case "isEmpty":
-                return streval(sp[1]).isEmpty();
-            case "equals":
-                return streval(sp[1]).equals(streval(sp[2]));
-            case "equalsic":
-                return streval(sp[1]).equalsIgnoreCase(streval(sp[2]));
-            case "startsWith":
-                if (sp.length == 3) {
-                    return streval(sp[1]).startsWith(streval(sp[2]));
-                } else {
-                    return streval(sp[1]).startsWith(streval(sp[2]), sint(streval(sp[3])));
-                }
-            case "endsWith":
-                return streval(sp[1]).endsWith(streval(sp[2]));
-            case "bar":
-                return getBArr(sp[1]).get(sint(feval(sp[2])));
-            default:
-                error("NOCOMMAND", "no boolean command: " + exp);
+        if (m.functions.containsKey(removeArgs(exp))) {
+            return true;
         }
-        return false;
+        return isMath(exp);
     }
-
-    static String[] strfs = {"substring", "lowercase", "uppercase", "trim",
-        "trimPar", "smartTrim", "sar"};
-
-    static boolean isStrf(String exp) {
-        String targ = "";
-        if (exp.contains("(")) {
-            targ = exp.substring(0, exp.indexOf("("));
-        }
-        for (String s : strfs) {
-            if (s.equals(targ)) {
-                return true;
+    
+    static float flookup(String exp) {
+        for (int i = m.floats.size() - 1; i >= 0; i--) {
+            if (hasFVar(exp, i)) {
+                return getFVar(exp, i);
             }
         }
-        return false;
-    }
-
-    static String doStrf(String exp) {
-        String[] sp = isplit(exp);
-        switch (sp[0]) {
-            case "substring":
-                if (sp.length == 3) {
-                    return streval(sp[1]).substring(sint(streval(sp[2])));
-                } else {
-                    return streval(sp[1]).substring(sint(streval(sp[2])),
-                            sint(streval(sp[3])));
-                }
-            case "lowercase":
-                return streval(sp[1]).toLowerCase();
-            case "uppercase":
-                return streval(sp[1]).toUpperCase();
-            case "trim":
-                return trim(streval(sp[1]));
-            case "trimPar":
-                return trimPar(streval(sp[1]));
-            case "smartTrim":
-                return smartTrim(streval(sp[1]));
-            case "sar":
-                return getSArr(sp[1]).get(sint(feval(sp[2])));
-            default:
-                error("NOCOMMAND", "no string command: " + exp);
+        if (isMath(exp)) {
+            return doMath(exp);
         }
-        return null;
+        return Float.parseFloat(m.functions.get(removeArgs(exp))
+                .dup().execute(exp));
+    }
+    
+    static boolean hasFVar(String exp, int level) {
+        return m.floats.get(level).hasKey(exp);
     }
 
+    static float getFVar(String exp) {
+        return getFVar(exp, m.floats.size() - 1);
+    }
+
+    static float getFVar(String exp, int level) {
+        float f = 0;
+        try {
+            f = m.floats.get(level).get(exp);
+        } catch (Exception e) {
+            error("NOVAR", "no variable " + exp + " found.");
+        }
+        return f;
+    }
+    
+    static void setFVar(int level, String name, float value) {
+        m.floats.get(level).set(name, value);
+    }
+    
+    static boolean isFArr(String exp) {
+        return m.farrs.get(m.farrs.size() - 1).containsKey(exp);
+    }
+
+    static ArrayList<Float> getFArr(String exp) {
+        return getFArr(exp, m.farrs.size() - 1);
+    }
+
+    static ArrayList<Float> getFArr(String exp, int level) {
+        ArrayList<Float> f = null;
+        try {
+            f = m.farrs.get(level).get(exp);
+        } catch (Exception e) {
+            error("NOVAR", "no float array " + exp + " found.");
+        }
+        return f;
+    }
+    
     static String[] maths = {"abs", "ceil", "floor", "floordiv", "min", "max",
         "round", "random", "exp", "log", "log10", "pow", "sqrt", "sin", "cos",
         "tan", "asin", "acos", "atan", "atan2", "sinh", "cosh", "tanh", "todeg",

@@ -9,14 +9,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import static teascript.TeaScript.debugMode;
+import static teascript.TeaScript.m;
 import static processing.core.PApplet.println;
 import static processing.core.PApplet.round;
 import static processing.core.PApplet.trim;
-import static teascript.Evaluator.beval;
-import static teascript.Evaluator.feval;
-import static teascript.Evaluator.isBoolean;
-import static teascript.TeaScript.debugMode;
-import static teascript.TeaScript.m;
+import static teascript.BMan.beval;
+import static teascript.BMan.isBoolean;
+import static teascript.FMan.feval;
 
 public class Utils {
 
@@ -265,5 +265,9 @@ public class Utils {
             println(e.toString());
             return null;
         }
+    }
+    
+    static float mod(float a, float b) {
+        return (a % b + b) % b;
     }
 }

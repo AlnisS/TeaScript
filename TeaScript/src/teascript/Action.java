@@ -7,19 +7,17 @@ package teascript;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import processing.data.*;
 import static processing.core.PApplet.print;
 import static processing.core.PApplet.println;
 import static processing.core.PApplet.str;
 import static processing.core.PApplet.trim;
-import processing.data.*;
-import static teascript.Utils.error;
-import static teascript.Evaluator.*;
 import static teascript.TeaScript.m;
-import static teascript.Utils.removeArgs;
 import static teascript.Tester.prettyUnitPass;
-import static teascript.Utils.isplit;
-import static teascript.Utils.sint;
-import static teascript.Utils.smartTrim;
+import static teascript.BMan.*;
+import static teascript.FMan.*;
+import static teascript.SMan.*;
+import static teascript.Utils.*;
 
 /**
  *
@@ -53,17 +51,6 @@ public class Action {
         if (beval(splits[1])) {
             new Action("GOTO(" + splits[2] + ")").execute(parentFun);
         }
-    }
-
-    void setSVar(int level, String name, String value) {
-        m.strings.get(level).set(name, value);
-    }
-
-    void setBVar(int level, String name, boolean value) {
-        m.booleans.get(level).set(name, value ? 1 : 0);
-  }
-    void setFVar(int level, String name, float value) {
-        m.floats.get(level).set(name, value);
     }
 
     void VARIABLE() {
@@ -263,13 +250,13 @@ public class Action {
     void ARR() {
         switch (smartTrim(splits[2])) {
             case "float":
-                m.farrs.get(m.farrs.size()-1).put(splits[1], new ArrayList<>());
+                m.farrs.get(m.farrs.size() - 1).put(splits[1], new ArrayList<>());
                 return;
             case "string":
-                m.sarrs.get(m.sarrs.size()-1).put(splits[1], new ArrayList<>());
+                m.sarrs.get(m.sarrs.size() - 1).put(splits[1], new ArrayList<>());
                 return;
             case "boolean":
-                m.barrs.get(m.barrs.size()-1).put(splits[1], new ArrayList<>());
+                m.barrs.get(m.barrs.size() - 1).put(splits[1], new ArrayList<>());
             default:
         }
     }
@@ -554,9 +541,10 @@ public class Action {
                 }
         }
     }
-    
+
     enum Type {
         PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE,
         USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR, U, IF, ENDIF,
-        ELSE, ELIF, DO, DOWHILE, WHILE, ENDWHILE, FOR, ENDFOR, ARR, ASET}
+        ELSE, ELIF, DO, DOWHILE, WHILE, ENDWHILE, FOR, ENDFOR, ARR, ASET
+    }
 }
