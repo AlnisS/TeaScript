@@ -14,13 +14,46 @@ import static processing.core.PApplet.println;
 import static processing.core.PApplet.str;
 import static processing.core.PApplet.trim;
 
+/**
+ * Represents a single line of script and handles its execution. Contains code
+ * for what to do for every type of instruction, keeps track of what instruction
+ * it is and its arguments, and handles its execution.
+ *
+ * @author alnis
+ */
 public class Action {
 
+    /**
+     * Raw string passed to it during creation.
+     */
     String creationString;
+    /**
+     * <code>creationString</code> split into array like {"FUNCTION", "arg_a",
+     * "arg_b", "arg_c", etc.}.
+     */
     String[] splits;
+    /**
+     * The <code>Type</code> of this Action (from splits[0]).
+     */
     Type type;
+    /**
+     * Function on which to call instructions and get actions/caches
+     */
     Function parentFun;
 
+    /**
+     * Prints first arg ("N" if only one arg) + tab + evaluated second arg. More
+     * specifically, if there are two arguments, it prints first argument + tab
+     * + evaluated second argument. If there is one argument, it prints "N" +
+     * tab + evaluated first argument.
+     *
+     * <p>
+     * If there is only one argument, it modifies <code>splits</code> to be as
+     * though the function call was <code>PRINT("N", [original first
+     * argument])</code>. It then evaluates splits[2] and prints that to the
+     * console. For a version running on a device without a nice console, this
+     * could be changed to print to a log file for easier debugging.</p>
+     */
     void PRINT() {
         if (splits.length < 3) {
             splits = new String[]{splits[0], "N", splits[1]};
@@ -29,21 +62,56 @@ public class Action {
         println(splits[1] + "\t" + tmp);
     }
 
+    /**
+     * Jumps to the label specified in the first argument. This is not safe to
+     * use between different functions and should always be used with caution.
+     *
+     * <p>
+     * Tells this <code>Action</code>'s containing function to jump to the line
+     * specified by the raw label name in the first argument.</p>
+     */
     void GOTO() {
         parentFun.GOTO(m.labels.get(splits[1]));
     }
 
+    /**
+     * Defines a label using the name of the first argument on its line.
+     *
+     * <p>
+     * Registers a label/line number pair in <code>m</code>'s label registry,
+     * then deactivates. Labels only need to be registered once, so there is no
+     * need to keep this instruction around.</p>
+     */
     void LABEL() {
         m.labels.set(splits[1], m.labeltemp);
         deactivate();
     }
 
+    /**
+     * Jumps label [second argument] if the first argument evaluates to true.
+     *
+     * <p>
+     * Evaluates splits[1] as a boolean, then makes a new <code>Action</code>
+     * with instruction GOTO for the label in the second argument, then executes
+     * it while pointing it to this actions parent funtion.</p>
+     */
     void BRANCH() {
         if (beval(splits[1])) {
             new Action("GOTO(" + splits[2] + ")").execute(parentFun);
         }
     }
 
+    /**
+     * Sets a variable named first arg with the value of the second argument. It
+     * automatically detects the type and will create it within the current
+     * "scope" (for example, in the correct level of recursion in a recursive
+     * function). This is also used to reassign existing variables.
+     *
+     * <p>
+     * It first detects the type of splits[2], then sets the variable by the raw
+     * name of splits[1] at the "top" level of variables to the evaluated value
+     * of splits[2].</p>
+     */
     void VARIABLE() {
         if (isString(splits[2])) {
             setSVar(m.strings.size() - 1, splits[1], streval(splits[2]));
@@ -54,14 +122,35 @@ public class Action {
         }
     }
 
+    /**
+     * Exits out of the script.
+     *
+     * <p>
+     * Simply calls the <code>end</code> function to break out of execution of
+     * the user script, run unit tests, and close.
+     */
     void END() {
         TeaScript.end();
     }
 
+    /**
+     * Does noting and is the same as an empty line.
+     *
+     * <p>
+     * When an Action is deactivated, its type is set to NONE.</p>
+     */
     void NONE() {
 
     }
-
+    /**
+     * Adds another "layer" or "level" of variables. This usually should not be
+     * called in the script because it is mostly an internal function. However,
+     * it can be called in scripts if you really want to, but don't forget a
+     * matching <code>DOWNSCOPE</code> because then there will be problems.
+     * 
+     * <p>Adds a dictionary/hashmap to each arraylist of collections of 
+     * variables/arrays respectively.</p>
+     */
     void UPSCOPE() {
         m.floats.add(new FloatDict());
         m.strings.add(new StringDict());
@@ -70,7 +159,15 @@ public class Action {
         m.sarrs.add(new HashMap<>());
         m.barrs.add(new HashMap<>());
     }
-
+    /**
+     * Removes top "layer" or "level" of variables. This usually should not be
+     * called in the script because it is mostly an internal function. However,
+     * it can be called in scripts if you really want to, but don't forget a
+     * matching <code>UPSCOPE</code> before because then there will be problems.
+     * 
+     * <p>Based off the size of each arraylist of dictionaries/hashmaps, for
+     * variables/arrays respectively, it removes the top one.</p>
+     */
     void DOWNSCOPE() {
         m.floats.remove(m.floats.size() - 1);
         m.strings.remove(m.strings.size() - 1);
@@ -79,11 +176,32 @@ public class Action {
         m.sarrs.remove(m.sarrs.size() - 1);
         m.barrs.remove(m.barrs.size() - 1);
     }
-
+    
+    /**
+     * Executes a function defined by the user while ignoring the return value.
+     * 
+     * <p>Gets a Function from the list of Functions in m by stripping the args
+     * from splits[1] and matching by name, then duplicates it (so that
+     * recursive calls don't trip each other up), then executes it with the
+     * splits[1] containing the functions name and arguments, much like how an
+     * Action is called.</p>
+     */
     void USERFUN() {
         m.functions.get(removeArgs(splits[1])).dup().execute(splits[1]);
     }
-
+    /**
+     * Flag for starting to define function foo as in <code>FDEF(foo())</code>.
+     * Do not specify arguments because those are passed into the function as
+     * a1, a2, a3... They can be of any type. An FDEF flag should have a
+     * matching EFDEF (end function definition) flag.
+     * 
+     * <p>First, an arraylist of actions is created. Then, the list of actions
+     * in <code>m</code> is iterated through until the EFDEF flag is found. Each
+     * Action is added to the arraylist, and if an Action is of Type RET, the
+     * type of the expression is noted and used to add the function to the
+     * correct list or lists of functions. Note that having multiple return
+     * types from a single function is kind of broken right now.</p>
+     */
     void FDEF() {
         ArrayList<Action> actions = new ArrayList<>();
         boolean isBoolean = false;

@@ -8,10 +8,21 @@ import static teascript.FMan.feval;
 import static teascript.BMan.isBoolean;
 import static teascript.BMan.beval;
 
+/**
+ * String manager: Evaluates expressions and manages variables. Uses
+ * <code>Machine m</code> as a place to store variables (both single variables 
+ * and arrays). Also uses user defined and built in string functions such as
+ * <code>substring</code> and contains various utility functions.
+ * @author alnis
+ */
 public class SMan {
-    
-    static String streval(String expb) {
-        String exp = smartTrim(expb);
+    /**
+     * Evaluates a string expression to its string result.
+     * @param exp Expression to evaluate.
+     * @return Resulting string value.
+     */
+    static String streval(String exp) {
+        exp = smartTrim(exp);
         String tstr = fstring(exp);
         int plus = tstr.lastIndexOf("+");
         if (plus != -1 && (isString(exp.substring(0, plus))
@@ -34,7 +45,13 @@ public class SMan {
         }
         return str(feval(exp));
     }
-    
+    /**
+     * Checks variable and function lists for <code>exp</code>. This includes
+     * simple string variables, functions returning strings, default string
+     * functions, and array lookups.
+     * @param exp Expression potentially representing lookup-able string value.
+     * @return Whether or not <code>exp</code> can be string looked up.
+     */
     static boolean slookupable(String exp) {
         for (int i = m.strings.size() - 1; i >= 0; i--) {
             if (m.strings.get(i).hasKey(exp)) {

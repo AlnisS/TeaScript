@@ -7,8 +7,19 @@ import static teascript.SMan.*;
 import static teascript.TeaScript.m;
 import static teascript.Utils.*;
 
+/**
+ * Float manager: Evaluates expressions and manages variables. Uses
+ * <code>Machine m</code> as a place to store variables (both single variables 
+ * and arrays). Also uses user defined and built in float functions such as
+ * <code>atan2</code> and contains various utility functions.
+ * @author alnis
+ */
 public class FMan {
-    
+    /**
+     * Evaluates a string expression to its float result.
+     * @param exp Expression to evaluate.
+     * @return Resulting float value.
+     */
     static float feval(String exp) {
         exp = trim(trimPar(trim(exp)));
         if (flookupable(exp)) {
@@ -74,7 +85,13 @@ public class FMan {
         }
         return f;
     }
-    
+    /**
+     * Checks variable and function lists for <code>exp</code>. This includes
+     * simple float variables, functions returning floats, default float
+     * functions, and array lookups.
+     * @param exp Expression potentially representing lookup-able float value.
+     * @return Whether or not <code>exp</code> can be float looked up.
+     */
     static boolean flookupable(String exp) {
         for (int i = m.floats.size() - 1; i >= 0; i--) {
             if (m.floats.get(i).hasKey(exp)) {

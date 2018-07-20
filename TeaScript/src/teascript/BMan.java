@@ -7,10 +7,21 @@ import static teascript.SMan.streval;
 import static teascript.TeaScript.m;
 import static teascript.Utils.*;
 
+/**
+ * Boolean manager: Evaluates expressions and manages variables. Uses
+ * <code>Machine m</code> as a place to store variables (both single variables 
+ * and arrays). Also uses user defined and built in boolean functions such as
+ * <code>isEmpty</code> and contains various utility functions.
+ * @author alnis
+ */
 public class BMan {
-    
-    static boolean beval(String expb) {
-        String exp = smartTrim(expb);
+    /**
+     * Evaluates a string expression to its boolean result.
+     * @param exp Expression to evaluate.
+     * @return Resulting boolean value.
+     */
+    static boolean beval(String exp) {
+        exp = smartTrim(exp);
         if (blookupable(exp)) {
             return blookup(exp);
         }
@@ -77,7 +88,13 @@ public class BMan {
 
         return exp.equals("true");
     }
-    
+    /**
+     * Checks variable and function lists for <code>exp</code>. This includes
+     * simple boolean variables, functions returning booleans, default boolean
+     * functions, and array lookups.
+     * @param exp Expression potentially representing lookup-able boolean value.
+     * @return Whether or not <code>exp</code> can be boolean looked up.
+     */
     static boolean blookupable(String exp) {
         for (int i = m.booleans.size() - 1; i >= 0; i--) {
             if (m.booleans.get(i).hasKey(exp)) {
