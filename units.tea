@@ -194,6 +194,14 @@ FDEF(main())
   U(1.0one, 1 + one(1))
   #this test fails but is not super critical (it is very much a corner case)
   #U(2.0, 1 + one("one"))
+  
+  VARIABLE(scopetest, 5)
+  UPSCOPE()
+  UPSCOPE()
+  U(5, scopetest)
+  DOWNSCOPE()
+  DOWNSCOPE()
+  
   RET(0)
 EFDEF()
 
