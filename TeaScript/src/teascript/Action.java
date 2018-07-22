@@ -406,11 +406,29 @@ public class Action {
     void ENDIF() {
 
     }
-
+    
+    /**
+     * DO flag for a DO/DOWHILE loop. This opens a new DOWHILE block. The
+     * instructions following it will always be executed at least once. This is
+     * the point to which the corresponding DOWHILE statement will jump.
+     * 
+     * <p>
+     * Just a flag, so there is no code.
+     * </p>
+     */
     void DO() {
 
     }
-
+    
+    /**
+     * WHILE part of a DOWHILE block: if the condition is true, jumps to the DO.
+     * If the first argument evaluates to a boolean true, it will jump right
+     * back up, all the way to the DO.
+     * 
+     * <p>
+     * Boolean evaluates the first argument. If true, skips back up to the DO.
+     * </p>
+     */
     void DOWHILE() {
         if (beval(splits[1])) {
             int dos = -1;
@@ -425,7 +443,16 @@ public class Action {
             }
         }
     }
-
+    
+    /**
+     * As long as the condition is true, the block will be repeatedly run. If
+     * the condition is false when the statement is first reached, the block
+     * will be skipped. This statement is also evaluated after each run of the
+     * block. If it is still true, the block will be evaluated again.
+     * 
+     * 
+     * 
+     */
     void WHILE() {
         if (!beval(splits[1])) {
             int whiles = 1;
