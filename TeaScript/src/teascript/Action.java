@@ -450,8 +450,9 @@ public class Action {
      * will be skipped. This statement is also evaluated after each run of the
      * block. If it is still true, the block will be evaluated again.
      * 
-     * 
-     * 
+     * <p>
+     * Skips to the end of the WHILE block if splits[1] evaluates to false.
+     * </p>
      */
     void WHILE() {
         if (!beval(splits[1])) {
@@ -467,7 +468,14 @@ public class Action {
             }
         }
     }
-
+    /**
+     * End flag for a WHILE block/loop. Doesn't take arguments, just closes the
+     * block.
+     * 
+     * <p>
+     * Sends execution up to the WHILE instruction for the condition to be
+     * evaluated again/for the WHILE instruction to run again.
+     */
     void ENDWHILE() {
         int whiles = -1;
         while (whiles < 0) {
@@ -481,7 +489,7 @@ public class Action {
         }
         parentFun.line--;
     }
-
+    
     void FOR() {
         new Action(splits[1]).execute(parentFun);
         jumpfor(splits[2]);
