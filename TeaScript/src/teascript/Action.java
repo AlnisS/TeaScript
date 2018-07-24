@@ -398,7 +398,7 @@ public class Action {
     /**
      * End IF block: ends the currently open IF block. Does not require any
      * arguments.
-     * 
+     *
      * <p>
      * Just a flag for other instructions. Doesn't have code.
      * </p>
@@ -406,12 +406,12 @@ public class Action {
     void ENDIF() {
 
     }
-    
+
     /**
      * DO flag for a DO/DOWHILE loop. This opens a new DOWHILE block. The
      * instructions following it will always be executed at least once. This is
      * the point to which the corresponding DOWHILE statement will jump.
-     * 
+     *
      * <p>
      * Just a flag, so there is no code.
      * </p>
@@ -419,12 +419,12 @@ public class Action {
     void DO() {
 
     }
-    
+
     /**
      * WHILE part of a DOWHILE block: if the condition is true, jumps to the DO.
      * If the first argument evaluates to a boolean true, it will jump right
      * back up, all the way to the DO.
-     * 
+     *
      * <p>
      * Boolean evaluates the first argument. If true, skips back up to the DO.
      * </p>
@@ -443,13 +443,13 @@ public class Action {
             }
         }
     }
-    
+
     /**
      * As long as the condition is true, the block will be repeatedly run. If
      * the condition is false when the statement is first reached, the block
      * will be skipped. This statement is also evaluated after each run of the
      * block. If it is still true, the block will be evaluated again.
-     * 
+     *
      * <p>
      * Skips to the end of the WHILE block if splits[1] evaluates to false.
      * </p>
@@ -468,10 +468,11 @@ public class Action {
             }
         }
     }
+
     /**
      * End flag for a WHILE block/loop. Doesn't take arguments, just closes the
      * block.
-     * 
+     *
      * <p>
      * Sends execution up to the WHILE instruction for the condition to be
      * evaluated again/for the WHILE instruction to run again.
@@ -489,12 +490,43 @@ public class Action {
         }
         parentFun.line--;
     }
-    
+
+    /**
+     * First argument init op, second continue condition, third increment op.
+     * The first argument is the initializer instruction. It is a TeaScript
+     * Action which looks like any other line of code in the script. For
+     * example, it could be <code>VARIABLE(i, 0)</code> to create variable i and
+     * initialize it to 0. If no Action is required, use <code>NONE()</code>. It
+     * runs before condition evaluation, block execution, and incrementation.
+     * The second argument must be an expression which evaluates to a boolean.
+     * For example, it could be <code>i < 8</code>. Execution will repeat as
+     * long as the condition is true. Finally, the incrementation Action is
+     * another instruction like any normal line of TeaScript code which runs
+     * after the block is executed but before jumping back to the condition. For
+     * example, it could be <code>VARIABLE(i, i + 1)</code>. The overall order
+     * is: init -> condition (skip past everything else if false) -> block of
+     * code -> incrementation -> back to condition.
+     *
+     * <p>
+     * Executes a new action made from the raw text of the first argument, then
+     * jumps over the rest if the second argument evaluates to false.
+     * </p>
+     */
     void FOR() {
         new Action(splits[1]).execute(parentFun);
         jumpfor(splits[2]);
     }
 
+    /**
+     * Flag for the end of a FOR loop. Doesn't take any arguments.
+     *
+     * <p>
+     * Skips the line back up to the line of the FOR statement, then creates and
+     * executes an action from the text of the FOR statement's third argument,
+     * then evaluates the FOR statement's condition and jumps over the block if
+     * it is false.
+     * </p>
+     */
     void ENDFOR() {
         int fors = -1;
         while (fors < 0) {
@@ -511,20 +543,37 @@ public class Action {
         jumpfor(parentFun.actions[parentFun.line].splits[2]);
     }
 
+    /**
+     * Creates an array of name first argument and type specified in the second.
+     * For example, an array of strings called names can be created with the
+     * statement <code>ARR(names, string)</code>.
+     *
+     * <p>
+     * Switches based off the trimmed second argument for the type, then adds an
+     * arraylist to the hashmap with key first argument.
+     * </p>
+     */
     void ARR() {
         switch (smartTrim(splits[2])) {
             case "float":
-                m.farrs.get(m.farrs.size() - 1).put(splits[1], new ArrayList<>());
+                m.farrs.get(m.farrs.size() - 1)
+                        .put(splits[1], new ArrayList<>());
                 return;
             case "string":
-                m.sarrs.get(m.sarrs.size() - 1).put(splits[1], new ArrayList<>());
+                m.sarrs.get(m.sarrs.size() - 1)
+                        .put(splits[1], new ArrayList<>());
                 return;
             case "boolean":
-                m.barrs.get(m.barrs.size() - 1).put(splits[1], new ArrayList<>());
+                m.barrs.get(m.barrs.size() - 1)
+                        .put(splits[1], new ArrayList<>());
             default:
         }
     }
 
+    /**
+     * Sets item in array first arg, item second arg, and value eval third arg.
+     *
+     */
     void ASET() {
         if (isFArr(splits[1])) {
             ArrayList<Float> fs = getFArr(splits[1]);
