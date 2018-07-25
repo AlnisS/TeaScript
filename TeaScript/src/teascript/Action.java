@@ -572,7 +572,8 @@ public class Action {
 
     /**
      * Sets item in array first arg, item second arg, and value eval third arg.
-     *
+     * Automatically detects type and adds any items needed to get up to that
+     * index.
      */
     void ASET() {
         if (isFArr(splits[1])) {
