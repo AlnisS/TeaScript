@@ -573,32 +573,56 @@ public class Action {
     /**
      * Sets item in array first arg, item second arg, and value eval third arg.
      * Automatically detects type and adds any items needed to get up to that
-     * index.
+     * index. This is both used to change existing elements and to add new ones.
+     * For example, to add 3 elements to an array of floats called fooarr:
+     * <code>ASET(fooarr, 2, 0)</code> The default value for added elements is
+     * 0, "", and false, for floats, strings, and booleans respectively. The
+     * third argument is only used as the value for the element at the specified
+     * index. The other values are set to their respective default values. The
+     * index value may be any float value. It will be rounded to the nearest
+     * integer when used to lookup an index.
+     * 
+     * <p>
+     * First, the second argument is float evaluated and rounded to give the
+     * target index of the item. The, the type of the array is detected and
+     * default values are added up to and including the target index if needed.
+     * Finally, the target index is set to the evaluated value of the third
+     * argument.
+     * </p>
      */
     void ASET() {
+        int itmp = sint(feval(splits[2]));
         if (isFArr(splits[1])) {
             ArrayList<Float> fs = getFArr(splits[1]);
-            while (fs.size() <= feval(splits[2])) {
+            while (fs.size() <= itmp) {
                 fs.add(0f);
             }
-            fs.set(sint(feval(splits[2])), feval(splits[3]));
+            fs.set(itmp, feval(splits[3]));
         }
         if (isSArr(splits[1])) {
             ArrayList<String> fs = getSArr(splits[1]);
-            while (fs.size() <= feval(splits[2])) {
+            while (fs.size() <= itmp) {
                 fs.add("");
             }
-            fs.set(sint(feval(splits[2])), streval(splits[3]));
+            fs.set(itmp, streval(splits[3]));
         }
         if (isBArr(splits[1])) {
             ArrayList<Boolean> fs = getBArr(splits[1]);
-            while (fs.size() <= feval(splits[2])) {
+            while (fs.size() <= itmp) {
                 fs.add(false);
             }
-            fs.set(sint(feval(splits[2])), beval(splits[3]));
+            fs.set(itmp, beval(splits[3]));
         }
     }
-
+    
+    /**
+     * @param s string to evaluate to boolean for whether block should execute
+     * 
+     * Boolean evaluates the string, and if the statement evals to false, skips
+     * over the block. The skip handles nested FOR statements by adding and
+     * subtracting from a counter based off the type of Action the current line
+     * is. It moves the line number within the parent function as it progresses.
+     */
     void jumpfor(String s) {
         if (!beval(s)) {
             int fors = 1;
@@ -613,7 +637,11 @@ public class Action {
             }
         }
     }
-
+    
+    /**
+     * @return whether current IF block had true IF/ELIF statement result
+     * This is used to check 
+     */
     boolean anytrue() {
         int ifs = -1;
         int tline = parentFun.line;
