@@ -616,12 +616,12 @@ public class Action {
     }
     
     /**
-     * @param s string to evaluate to boolean for whether block should execute
+     * Boolean evaluates string, and if false, skips over rest of FOR block. The
+     * skip handles nested FOR statements by adding and subtracting from a
+     * counter based off the type of Action the current line is. It moves the
+     * line number within the parent function as it progresses.
      * 
-     * Boolean evaluates the string, and if the statement evals to false, skips
-     * over the block. The skip handles nested FOR statements by adding and
-     * subtracting from a counter based off the type of Action the current line
-     * is. It moves the line number within the parent function as it progresses.
+     * @param s string to evaluate to boolean for whether block should execute
      */
     void jumpfor(String s) {
         if (!beval(s)) {
@@ -639,8 +639,15 @@ public class Action {
     }
     
     /**
+     * Checks whether ELSE/ELIF statement should be executed/checked. It
+     * iterates through the cache of if results in the parent function while
+     * keeping track of how deep in a block it is using the ifs variable. If the
+     * depth is -1, or one block in, it will check if the current line is an IF
+     * or ELIF statement, and if it is, it will return true if the cached result
+     * for it is true. Otherwise, it will continue. It returns false if no level
+     * -1 IF/ELIF statements were true.
+     * 
      * @return whether current IF block had true IF/ELIF statement result
-     * This is used to check 
      */
     boolean anytrue() {
         int ifs = -1;
@@ -660,7 +667,12 @@ public class Action {
         }
         return false;
     }
-
+    
+    /**
+     * Skips to the next potential end of the current IF block. This includes
+     * ENDIF, ELSE, and ELIF statements. It decrements the line once in order to
+     * ensure the execution of the found statement on the next go-around.
+     */
     void skiptoendofif() {
         int ifs = 1;
         while (ifs > 0) {
@@ -675,7 +687,12 @@ public class Action {
         }
         parentFun.line--;
     }
-
+    
+    /**
+     * Sets this Action's Type to NONE, thus deactivating it from executing.
+     * This does still preserve the arguments passed to the function along with
+     * the creation string and parent function.
+     */
     void deactivate() {
         type = Type.NONE;
     }
