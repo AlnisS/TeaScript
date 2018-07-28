@@ -581,7 +581,7 @@ public class Action {
      * index. The other values are set to their respective default values. The
      * index value may be any float value. It will be rounded to the nearest
      * integer when used to lookup an index.
-     * 
+     *
      * <p>
      * First, the second argument is float evaluated and rounded to give the
      * target index of the item. The, the type of the array is detected and
@@ -614,13 +614,13 @@ public class Action {
             fs.set(itmp, beval(splits[3]));
         }
     }
-    
+
     /**
      * Boolean evaluates string, and if false, skips over rest of FOR block. The
      * skip handles nested FOR statements by adding and subtracting from a
      * counter based off the type of Action the current line is. It moves the
      * line number within the parent function as it progresses.
-     * 
+     *
      * @param s string to evaluate to boolean for whether block should execute
      */
     void jumpfor(String s) {
@@ -637,7 +637,7 @@ public class Action {
             }
         }
     }
-    
+
     /**
      * Checks whether ELSE/ELIF statement should be executed/checked. It
      * iterates through the cache of if results in the parent function while
@@ -646,7 +646,7 @@ public class Action {
      * or ELIF statement, and if it is, it will return true if the cached result
      * for it is true. Otherwise, it will continue. It returns false if no level
      * -1 IF/ELIF statements were true.
-     * 
+     *
      * @return whether current IF block had true IF/ELIF statement result
      */
     boolean anytrue() {
@@ -667,7 +667,7 @@ public class Action {
         }
         return false;
     }
-    
+
     /**
      * Skips to the next potential end of the current IF block. This includes
      * ENDIF, ELSE, and ELIF statements. It decrements the line once in order to
@@ -687,7 +687,7 @@ public class Action {
         }
         parentFun.line--;
     }
-    
+
     /**
      * Sets this Action's Type to NONE, thus deactivating it from executing.
      * This does still preserve the arguments passed to the function along with
@@ -697,6 +697,14 @@ public class Action {
         type = Type.NONE;
     }
 
+    /**
+     * Sets up this Action's Type as t and checks for at least args arguments.
+     * Assumes that splits has already been correctly created. Will give a
+     * script error if there are not enough arguments.
+     *
+     * @param t Type of this Action
+     * @param args number of arguments required at a minimum
+     */
     final void s(Type t, int args) {
         type = t;
         if (splits.length - 1 < args) {
@@ -705,6 +713,11 @@ public class Action {
         }
     }
 
+    /**
+     * Runs this Action with f indicating the Function calling this Action.
+     *
+     * @param f function which is calling this Action
+     */
     void execute(Function f) {
         parentFun = f;
         switch (type) {
@@ -801,6 +814,14 @@ public class Action {
         }
     }
 
+    /**
+     * Constructs a new Action from the String representing FUNCTION(arg1, ...).
+     * Trims and splits the String into the function name and arguments into the
+     * array splits, then calls the setup/check function with the type and
+     * required number of arguments.
+     *
+     * @param args String representing the function with arguments
+     */
     Action(String args) {
         creationString = trim(args);
         splits = isplit(creationString);
@@ -901,6 +922,9 @@ public class Action {
         }
     }
 
+    /**
+     * The possible types of Actions.
+     */
     enum Type {
         PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE,
         USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR, U, IF, ENDIF,
