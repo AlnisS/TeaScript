@@ -9,14 +9,17 @@ import static teascript.Utils.*;
 
 /**
  * Float manager: Evaluates expressions and manages variables. Uses
- * <code>Machine m</code> as a place to store variables (both single variables 
+ * <code>Machine m</code> as a place to store variables (both single variables
  * and arrays). Also uses user defined and built in float functions such as
  * <code>atan2</code> and contains various utility functions.
+ *
  * @author alnis
  */
 public class FMan {
+
     /**
      * Evaluates a string expression to its float result.
+     *
      * @param exp Expression to evaluate.
      * @return Resulting float value.
      */
@@ -85,10 +88,12 @@ public class FMan {
         }
         return f;
     }
+
     /**
      * Checks variable and function lists for <code>exp</code>. This includes
      * simple float variables, functions returning floats, default float
      * functions, and array lookups.
+     *
      * @param exp Expression potentially representing lookup-able float value.
      * @return Whether or not <code>exp</code> can be float looked up.
      */
@@ -103,7 +108,7 @@ public class FMan {
         }
         return isMath(exp);
     }
-    
+
     static float flookup(String exp) {
         for (int i = m.floats.size() - 1; i >= 0; i--) {
             if (hasFVar(exp, i)) {
@@ -116,7 +121,7 @@ public class FMan {
         return Float.parseFloat(m.functions.get(removeArgs(exp))
                 .dup().execute(exp));
     }
-    
+
     static boolean hasFVar(String exp, int level) {
         return m.floats.get(level).hasKey(exp);
     }
@@ -134,11 +139,11 @@ public class FMan {
         }
         return f;
     }
-    
+
     static void setFVar(int level, String name, float value) {
         m.floats.get(level).set(name, value);
     }
-    
+
     static boolean isFArr(String exp) {
         return m.farrs.get(m.farrs.size() - 1).containsKey(exp);
     }
@@ -156,7 +161,7 @@ public class FMan {
         }
         return f;
     }
-    
+
     static String[] maths = {"abs", "ceil", "floor", "floordiv", "min", "max",
         "round", "random", "exp", "log", "log10", "pow", "sqrt", "sin", "cos",
         "tan", "asin", "acos", "atan", "atan2", "sinh", "cosh", "tanh", "todeg",
@@ -226,7 +231,7 @@ public class FMan {
             case "cosh":
                 return (exp(feval(sp[1])) + exp(-feval(sp[1]))) / 2;
             case "tanh":
-                return (exp(2*feval(sp[1])) - 1) / (exp(2*feval(sp[1])) + 1);
+                return (exp(2 * feval(sp[1])) - 1) / (exp(2 * feval(sp[1])) + 1);
             case "todeg":
                 return degrees(feval(sp[1]));
             case "torad":

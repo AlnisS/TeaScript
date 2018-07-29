@@ -10,14 +10,17 @@ import static teascript.BMan.beval;
 
 /**
  * String manager: Evaluates expressions and manages variables. Uses
- * <code>Machine m</code> as a place to store variables (both single variables 
+ * <code>Machine m</code> as a place to store variables (both single variables
  * and arrays). Also uses user defined and built in string functions such as
  * <code>substring</code> and contains various utility functions.
+ *
  * @author alnis
  */
 public class SMan {
+
     /**
      * Evaluates a string expression to its string result.
+     *
      * @param exp Expression to evaluate.
      * @return Resulting string value.
      */
@@ -45,10 +48,12 @@ public class SMan {
         }
         return str(feval(exp));
     }
+
     /**
      * Checks variable and function lists for <code>exp</code>. This includes
      * simple string variables, functions returning strings, default string
      * functions, and array lookups.
+     *
      * @param exp Expression potentially representing lookup-able string value.
      * @return Whether or not <code>exp</code> can be string looked up.
      */
@@ -63,7 +68,7 @@ public class SMan {
         }
         return isStrf(exp);
     }
-    
+
     static String slookup(String exp) {
         for (int i = m.strings.size() - 1; i >= 0; i--) {
             if (hasSVar(exp, i)) {
@@ -75,7 +80,7 @@ public class SMan {
         }
         return m.sfunctions.get(removeArgs(exp)).dup().execute(exp);
     }
-    
+
     static boolean hasSVar(String exp, int level) {
         return m.strings.get(level).hasKey(exp);
     }
@@ -93,11 +98,11 @@ public class SMan {
         }
         return s;
     }
-    
+
     static void setSVar(int level, String name, String value) {
         m.strings.get(level).set(name, value);
     }
-    
+
     static boolean isSArr(String exp) {
         return m.sarrs.get(m.sarrs.size() - 1).containsKey(exp);
     }
@@ -115,7 +120,7 @@ public class SMan {
         }
         return f;
     }
-    
+
     static boolean isString(String exp) {
         String[] tmp = nsplit(exp, '+');
         for (String s : tmp) {
@@ -127,7 +132,7 @@ public class SMan {
         return isRawString(exp) || t.contains("str(") || t.contains("\"")
                 || m.sfunctions.containsKey(removeArgs(exp));
     }
-    
+
     static boolean isRawString(String s) {
         return s.charAt(0) == '"' && s.charAt(s.length() - 1) == '"';
     }
@@ -153,7 +158,7 @@ public class SMan {
         }
         return str.toString();
     }
-    
+
     static String[] strfs = {"substring", "lowercase", "uppercase", "trim",
         "trimPar", "smartTrim", "sar"};
 

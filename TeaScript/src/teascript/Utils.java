@@ -248,8 +248,8 @@ public class Utils {
         try {
             FileReader fileReader = new FileReader(file);
             ArrayList<String> lines;
-            try (BufferedReader bufferedReader =
-                    new BufferedReader(fileReader)) {
+            try (BufferedReader bufferedReader
+                    = new BufferedReader(fileReader)) {
                 lines = new ArrayList<>();
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
@@ -262,7 +262,7 @@ public class Utils {
             return null;
         }
     }
-    
+
     static float mod(float a, float b) {
         return (a % b + b) % b;
     }

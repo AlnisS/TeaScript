@@ -9,14 +9,17 @@ import static teascript.Utils.*;
 
 /**
  * Boolean manager: Evaluates expressions and manages variables. Uses
- * <code>Machine m</code> as a place to store variables (both single variables 
+ * <code>Machine m</code> as a place to store variables (both single variables
  * and arrays). Also uses user defined and built in boolean functions such as
  * <code>isEmpty</code> and contains various utility functions.
+ *
  * @author alnis
  */
 public class BMan {
+
     /**
      * Evaluates a string expression to its boolean result.
+     *
      * @param exp Expression to evaluate.
      * @return Resulting boolean value.
      */
@@ -88,10 +91,12 @@ public class BMan {
 
         return exp.equals("true");
     }
+
     /**
      * Checks variable and function lists for <code>exp</code>. This includes
      * simple boolean variables, functions returning booleans, default boolean
      * functions, and array lookups.
+     *
      * @param exp Expression potentially representing lookup-able boolean value.
      * @return Whether or not <code>exp</code> can be boolean looked up.
      */
@@ -106,7 +111,7 @@ public class BMan {
         }
         return isBoolf(exp);
     }
-    
+
     static boolean blookup(String exp) {
         for (int i = m.booleans.size() - 1; i >= 0; i--) {
             if (hasBVar(exp, i)) {
@@ -119,7 +124,7 @@ public class BMan {
         return m.bfunctions.get(removeArgs(exp))
                 .dup().execute(exp).equals("true");
     }
-    
+
     static boolean hasBVar(String exp, int level) {
         return m.booleans.get(level).hasKey(exp);
     }
@@ -137,11 +142,11 @@ public class BMan {
         }
         return b;
     }
-    
+
     static void setBVar(int level, String name, boolean value) {
         m.booleans.get(level).set(name, value ? 1 : 0);
     }
-    
+
     static boolean isBArr(String exp) {
         return m.barrs.get(m.barrs.size() - 1).containsKey(exp);
     }
@@ -159,7 +164,7 @@ public class BMan {
         }
         return f;
     }
-    
+
     static boolean isBoolean(String exp_) {
         String expb = smartTrim(exp_);
 
@@ -175,7 +180,7 @@ public class BMan {
                 || exp.contains("<=") || exp.contains("true")
                 || exp.contains("false") || exp.contains("!");
     }
-    
+
     static String[] boolfs = {"isEmpty", "equals", "equalsic", "startsWith",
         "endsWith", "bar"};
 
