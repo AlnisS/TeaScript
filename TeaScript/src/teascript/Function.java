@@ -5,11 +5,25 @@ import static teascript.Utils.isplit;
 import static processing.core.PApplet.trim;
 
 public class Function {
-
+    /**
+     * Line this instance is on in its local action space.
+     */
     int line = -1;
+    /**
+     * A copy of this Function's Actions (not modified, for easy iteration).
+     */
     Action[] actions;
+    /**
+     * Latest boolean result for IF/ELIF statement on that line (local space).
+     */
     boolean[] ifresults;
+    /**
+     * Offset global space (Action array in m) -> local (line after FDEF 0).
+     */
     int globalToLocalOffset;
+    /**
+     * Result to return.
+     */
     String ans;
 
     Function(Action[] actions, int line) {
