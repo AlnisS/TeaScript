@@ -1,2 +1,2 @@
 # TeaScript
-Check out docs.odt for documentation
+Check out http://teascript.bitballoon.com/ for documentation
