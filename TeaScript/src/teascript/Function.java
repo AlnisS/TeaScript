@@ -5,6 +5,7 @@ import static teascript.Utils.isplit;
 import static processing.core.PApplet.trim;
 
 public class Function {
+
     /**
      * Line this instance is on in its local action space.
      */
@@ -26,12 +27,34 @@ public class Function {
      */
     String ans;
 
+    /**
+     * Constructs new Function given array of its Actions and line it is on.
+     * actions is an array of all Actions which are within the Function block.
+     * The line is the line (zero indexed) the function is on in the file of
+     * script instructions. line is used to calculate he offset from global
+     * (file) to local (actions array) Action space. It can be added to a global
+     * line number to give the local number. Local numbers are zero indexed
+     * starting on the first line after the function definition Action. A new
+     * array of if results is made so that recursive calls do not interfere with
+     * logic in other levels.
+     *
+     * @param actions
+     * @param line
+     */
     Function(Action[] actions, int line) {
         this.actions = actions;
         globalToLocalOffset = -1 - line;
         ifresults = new boolean[actions.length];
     }
 
+    /**
+     * Creates duplicate of current function for actual execution. This should
+     * be used to create a new Function (with an isolated current line number,
+     * set of if results, etc.) before executing. The original Function remains
+     * as a sort of template for duplicating off copies for recursive execution.
+     *
+     * @return New Function, executable without interfering with other copies.
+     */
     Function dup() {
         return new Function(actions, -(globalToLocalOffset + 1));
     }
