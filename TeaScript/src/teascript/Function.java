@@ -59,6 +59,25 @@ public class Function {
         return new Function(actions, -(globalToLocalOffset + 1));
     }
 
+    /**
+     * Executes Function with args vars and returns the string evaluated result.
+     * Sets the debug line by inverting the globalToLocalOffset to get the
+     * current line in global space. Scopes up to prevent variable muddling
+     * between recursive/call levels. Trims/splits arguments into String array,
+     * then makes variables named a1, a2, a3, ... for the first, second, third,
+     * ... arguments. Goes via a temp variable because making a new a1 (first
+     * arg) will cause lookups of a1 in subsequent arguments to go to the new a1
+     * instead of the correct a1 from the "further out" function. Executes
+     * Actions by incrementing the line number while staying in bounds. Updates
+     * debugline appropriately. Finally removes variables from this "level" and
+     * moves down a scope to return to the previous recursive/call level.
+     * Returns ans, which should have been set by a RET Action somewhere in the
+     * Function. If result is float, will return float in string form. Same for
+     * boolean returns.
+     *
+     * @param vars String containing arguments to evaluate and variable assign
+     * @return String representation of result of Function/return value
+     */
     String execute(String vars) {
         m.debugline = -1 - globalToLocalOffset;
         new Action("UPSCOPE()").execute(this);
@@ -80,11 +99,21 @@ public class Function {
         return ans;
     }
 
+    /**
+     * Sets return value to ans and sets line to skip to the Function's end.
+     *
+     * @param ans value to return
+     */
     void RET(String ans) {
         this.ans = ans;
         line = actions.length;
     }
 
+    /**
+     * Sets current line in this Function instance using gloabl line number.
+     *
+     * @param line_ global line number to jump to
+     */
     void GOTO(int line_) {
         line = line_ + globalToLocalOffset;
     }
