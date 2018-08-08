@@ -29,17 +29,17 @@ public class BMan {
             return blookup(exp);
         }
 
-        String tstr = fstring(exp);
-        int or = tstr.lastIndexOf("||");
-        int and = tstr.lastIndexOf("&&");
-        int gtr = noconpos(tstr, ">", ">=", ">=");
-        int les = noconpos(tstr, "<", "<=", "<=");
-        int gte = tstr.lastIndexOf(">=");
-        int lse = tstr.lastIndexOf("<=");
-        int neq = tstr.lastIndexOf("!=");
-        int equ = tstr.lastIndexOf("==");
-        int xor = tstr.lastIndexOf("^");
-        int not = tstr.lastIndexOf("!");
+        String tmpstring = fstring(exp);
+        int or = tmpstring.lastIndexOf("||");
+        int and = tmpstring.lastIndexOf("&&");
+        int gtr = noconpos(tmpstring, ">", ">=", ">=");
+        int les = noconpos(tmpstring, "<", "<=", "<=");
+        int gte = tmpstring.lastIndexOf(">=");
+        int lse = tmpstring.lastIndexOf("<=");
+        int neq = tmpstring.lastIndexOf("!=");
+        int equ = tmpstring.lastIndexOf("==");
+        int xor = tmpstring.lastIndexOf("^");
+        int not = tmpstring.lastIndexOf("!");
 
         int maxmul = max(max(gtr, les), max(gte, lse));
         if (gtr != maxmul) {

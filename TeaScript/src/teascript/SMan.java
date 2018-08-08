@@ -26,8 +26,8 @@ public class SMan {
      */
     static String streval(String exp) {
         exp = smartTrim(exp);
-        String tstr = fstring(exp);
-        int plus = tstr.lastIndexOf("+");
+        String tmpstring = fstring(exp);
+        int plus = tmpstring.lastIndexOf("+");
         if (plus != -1 && (isString(exp.substring(0, plus))
                 || isString(exp.substring(plus + 1)))) {
             return streval(exp.substring(0, plus))

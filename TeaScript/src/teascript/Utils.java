@@ -14,6 +14,11 @@ import static teascript.BMan.beval;
 import static teascript.BMan.isBoolean;
 import static teascript.FMan.feval;
 
+/**
+ * Misc utils for string/file wrangling along with math and other stuff.
+ *
+ * @author chrx
+ */
 public class Utils {
 
     static int sint(String s) {

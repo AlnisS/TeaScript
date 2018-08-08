@@ -29,14 +29,14 @@ public class FMan {
             return flookup(exp);
         }
 
-        String tstr = fstring(exp);
-        int add = tstr.lastIndexOf("+");
-        int sub = notNegative(tstr);
-        int mul = noconpos(tstr, "*", "\\*\\*", "**");
-        int div = tstr.lastIndexOf("/");
-        int rem = tstr.lastIndexOf("%%");
-        int mod = noconpos(tstr, "%", "%%", "%%");
-        int pow = tstr.lastIndexOf("**");
+        String tmpstring = fstring(exp);
+        int add = tmpstring.lastIndexOf("+");
+        int sub = notNegative(tmpstring);
+        int mul = noconpos(tmpstring, "*", "\\*\\*", "**");
+        int div = tmpstring.lastIndexOf("/");
+        int rem = tmpstring.lastIndexOf("%%");
+        int mod = noconpos(tmpstring, "%", "%%", "%%");
+        int pow = tmpstring.lastIndexOf("**");
 
         int maxmul = max(max(mul, div), max(rem, mod));
         if (mul != maxmul) {
@@ -76,8 +76,8 @@ public class FMan {
                     feval(exp.substring(pow + 2)));
         }
 
-        if (tstr.contains("-")) {
-            return -feval(exp.substring(tstr.indexOf("-") + 1));
+        if (tmpstring.contains("-")) {
+            return -feval(exp.substring(tmpstring.indexOf("-") + 1));
         }
 
         float f = 0;

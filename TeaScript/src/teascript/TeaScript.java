@@ -3,6 +3,11 @@ package teascript;
 import java.util.ArrayList;
 import static processing.core.PApplet.println;
 
+/**
+ * Main class: holds main Machine, other vars; handles startup and unit tests.
+ *
+ * @author chrx
+ */
 public class TeaScript {
 
     /**
