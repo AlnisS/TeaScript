@@ -21,14 +21,36 @@ import static teascript.FMan.feval;
  */
 public class Utils {
 
+    /**
+     * "smart" cast to integer: parses, rounds, then casts string to int.
+     *
+     * @param s String to turn into int.
+     * @return s turned into an int.
+     */
     static int sint(String s) {
         return (int) (round(Float.parseFloat(s)));
     }
 
+    /**
+     * "smart" cast to integer: rounds, then casts float to int.
+     *
+     * @param f float to turn into int.
+     * @return f turned into an int.
+     */
     static int sint(float f) {
         return (int) (round(f));
     }
 
+    /**
+     * Given index of "-" in exp, returns whether it is a negative sign.
+     * Searches backward to find which char is in front of it. If it is a math
+     * op/boolean op symbol or the start of the expression, returns true. Else,
+     * returns false.
+     *
+     * @param exp String to search.
+     * @param index index of "-" to search back from.
+     * @return whether the "-" at index in exp is a negative sign.
+     */
     static boolean isNegative(String exp, int index) {
         while (--index != -1 && exp.charAt(index) == ' ') {
         }
@@ -55,6 +77,12 @@ public class Utils {
         }
     }
 
+    /**
+     * Returns last index of "-" in exp which is not a negative sign.
+     *
+     * @param exp String to search.
+     * @return last index of "-" in exp which is not a negative sign.
+     */
     static int notNegative(String exp) {
         int cand = exp.lastIndexOf("-");
         while (cand != -1 && isNegative(exp, cand)) {
@@ -63,6 +91,11 @@ public class Utils {
         return cand;
     }
 
+    /**
+     * Pretty prints an array of Strings.
+     *
+     * @param s array of Strings to pretty print.
+     */
     static void clsap(String[] s) {
         String acc = "list: ";
         for (String a : s) {
