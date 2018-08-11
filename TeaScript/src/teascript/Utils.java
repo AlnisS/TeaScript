@@ -104,6 +104,24 @@ public class Utils {
         println(acc);
     }
 
+    /**
+     * Returns last non-conflicting (index != bad regex) of String ok in exp.
+     * For example, there might be a String with an > sign in it. However, this
+     * > sign may be part of a >= sign. Only using lastIndexOf may give the
+     * index of this sign. Instead, it may be more correct to ignore this >
+     * sign. To do so, do: <code>var = noconpos(string to search, ">", ">=",
+     * ">=")</code>. In this case, the regex is the same as the bad String.
+     * However, in other cases, be careful to type the regex String such that
+     * the resulting String is itself the valid regex expression matching the
+     * bad string. For example: "\\*\\*" would be the regex version of "**" as
+     * the bad String.
+     *
+     * @param exp String in which to search for non-conflicting position.
+     * @param ok good String to search for.
+     * @param badrx regex version of bad String.S
+     * @param bad plain version of bad String.
+     * @return index of last non-conflicting position of ok in exp (not bad).
+     */
     static int noconpos(String exp, String ok, String badrx, String bad) {
         String[] p = exp.split(badrx);
         for (int i = p.length - 1; i >= 0; i--) {
@@ -119,10 +137,19 @@ public class Utils {
         return -1;
     }
 
+    /**
+     * The various TeaScript script errors.
+     */
     enum Error {
         MISMATCH, NOVAR, NOCOMMAND, FLOATPARSE, ARGCOUNT
     }
 
+    /**
+     * "handles" a script error by sort of pretty printing and maybe stopping.
+     *
+     * @param s type of Error (as a String, enum is broken).
+     * @param message hopefully nice desciption of what happened.
+     */
     static void error(String s, String message) {
         println("\n\n\nerror " + s + " on line " + (m.debugline + 1) + ":");
         println(m.rawstrings[m.debugline]);
@@ -131,10 +158,24 @@ public class Utils {
         assert (debugMode);
     }
 
+    /**
+     * "Integligent" check of lesser than: if b == -1, it ignores it.
+     *
+     * @param a first part of lesser than.
+     * @param b second part of lesser than.
+     * @return "integligent" lesser than check (if second arg is -1, true).
+     */
     static boolean il(float a, float b) {
         return a < b || b == -1;
     }
 
+    /**
+     * Checks if two Strings are equal as booleans or floats.
+     *
+     * @param exp first String to compare.
+     * @param expb second String to compare.
+     * @return whether exp and expb are equal as booleans or floats.
+     */
     static boolean equiv(String exp, String expb) {
         if (isBoolean(exp) && isBoolean(expb)) {
             return beval(exp) == beval(expb);
@@ -142,10 +183,30 @@ public class Utils {
         return feval(exp) == feval(expb);
     }
 
+    /**
+     * Filters String exp using <code>fstring(exp, "(", ")")</code>.
+     *
+     * @param exp String to filter
+     * @return String exp flitered using "(" and ")".
+     */
     static String fstring(String exp) {
         return fstring(exp, "(", ")");
     }
 
+    /**
+     * Filters String exp by replacing chars within filter bounds with '#'.
+     * Iterates over exp, incrementing the "parentheses" counter for every
+     * opening String and decrementing it for every "closing" string while also
+     * creating an array of ints tracking this "depth". If the opening and
+     * closing Strings are equivalent, it toggles between open and closed
+     * instead. If the parentheses don't match up/cancel out, throws a script
+     * error. Finally, replaces chars which should be filtered with '#' chars.
+     *
+     * @param exp String to filter.
+     * @param splito opening char for filter.
+     * @param splitc closing char for filter.
+     * @return String exp filtered with opener splito and closer splitc.
+     */
     static String fstring(String exp, String splito, String splitc) {
         int par = 0;
         int[] pars = new int[exp.length()];
@@ -178,6 +239,12 @@ public class Utils {
         return new String(tmp);
     }
 
+    /**
+     * Strips the arguments out of a function call (foo(a, b) -> foo()).
+     *
+     * @param _exp String to remove arguments from (assumes it is a function).
+     * @return _exp with arguments stripped.
+     */
     static String removeArgs(String _exp) {
         String exp = fstring(_exp);
         String res = "";
@@ -189,6 +256,12 @@ public class Utils {
         return res;
     }
 
+    /**
+     * Trims all whitespace and matching parentheses off the ends of String exp.
+     *
+     * @param exp String to trim.
+     * @return exp with parentheses and whitespace trimmed off.
+     */
     static String smartTrim(String exp) {
         String a;
         String b = exp;
@@ -199,6 +272,14 @@ public class Utils {
         return b;
     }
 
+    /**
+     * Trims matching parentheses off the ends of String _exp. Runs through to
+     * check if the outer parentheses match, then whacks them off and continues
+     * to do so until they don't or aren't parentheses.
+     *
+     * @param _exp String to trim parentheses off of.
+     * @return _exp with parentheses trimmed off of the ends.
+     */
     static String trimPar(String _exp) {
         String exp = _exp.substring(0);
         int par = 0;
