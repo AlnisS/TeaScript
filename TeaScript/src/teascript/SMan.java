@@ -163,12 +163,14 @@ public class SMan {
         "trimPar", "smartTrim", "sar"};
 
     static boolean isStrf(String exp) {
-        String targ = "";
-        if (exp.contains("(")) {
-            targ = exp.substring(0, exp.indexOf("("));
-        }
+        String targ = iRemoveArgs(exp);
         for (String s : strfs) {
             if (s.equals(targ)) {
+                return true;
+            }
+        }
+        for (Tint t : TeaScript.tints) {
+            if (t.hasStringByName(targ)) {
                 return true;
             }
         }
@@ -177,6 +179,11 @@ public class SMan {
 
     static String doStrf(String exp) {
         String[] sp = isplit(exp);
+        for (Tint t : TeaScript.tints) {
+            if (t.hasStringByName(sp[0])) {
+                return t.stringByName(sp);
+            }
+        }
         switch (sp[0]) {
             case "substring":
                 if (sp.length == 3) {

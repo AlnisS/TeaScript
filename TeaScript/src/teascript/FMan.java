@@ -174,8 +174,7 @@ public class FMan {
         "far"};
 
     static boolean isMath(String exp) {
-        String targ = removeArgs(exp);
-        if(targ.length() > 2) targ = targ.substring(0, targ.length() - 2);
+        String targ = iRemoveArgs(exp);
         for (String s : maths) {
             if (s.equals(targ)) {
                 return true;

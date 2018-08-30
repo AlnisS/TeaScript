@@ -36,7 +36,7 @@ public class TeaScript {
     }
 
     public static void main(String file, Tint[] tints_) {
-        runTests = false;
+        runTests = true;
         main(file, tints_, false);
     }
 

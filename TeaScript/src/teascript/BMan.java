@@ -185,12 +185,14 @@ public class BMan {
         "endsWith", "bar"};
 
     static boolean isBoolf(String exp) {
-        String targ = "";
-        if (exp.contains("(")) {
-            targ = exp.substring(0, exp.indexOf("("));
-        }
+        String targ = iRemoveArgs(exp);
         for (String s : boolfs) {
             if (s.equals(targ)) {
+                return true;
+            }
+        }
+        for (Tint t : TeaScript.tints) {
+            if (t.hasBooleanByName(targ)) {
                 return true;
             }
         }
@@ -199,6 +201,11 @@ public class BMan {
 
     static boolean doBoolf(String exp) {
         String[] sp = isplit(exp);
+        for (Tint t : TeaScript.tints) {
+            if (t.hasBooleanByName(sp[0])) {
+                return t.booleanByName(sp);
+            }
+        }
         switch (sp[0]) {
             case "isEmpty":
                 return streval(sp[1]).isEmpty();

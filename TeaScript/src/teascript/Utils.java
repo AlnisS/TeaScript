@@ -392,4 +392,10 @@ public class Utils {
         }
         return cand;
     }
+
+    static String iRemoveArgs(String exp) {
+        String targ = removeArgs(exp);
+        if(targ.length() > 2) targ = targ.substring(0, targ.length() - 2);
+        return targ;
+    }
 }
