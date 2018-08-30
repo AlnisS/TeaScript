@@ -1,0 +1,20 @@
+FDEF(init())
+  RET(0)
+EFDEF()
+
+FDEF(main())
+  USERFUN(bardemo())
+  RET(0)
+EFDEF()
+
+FDEF(bardemo())
+  SYSFUN(loudPrint(boo(2.5, fib( foo("three") + foo("two") ) )))
+  RET(0)
+EFDEF()
+
+FDEF(fib())
+  IF(a1 <= 1)
+    RET(a1)
+  ENDIF()
+  RET(fib(a1-1) + fib(a1-2))
+EFDEF()
