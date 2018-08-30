@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import static processing.core.PApplet.println;
 import static processing.core.PApplet.round;
 import static teascript.TeaScript.m;
+import static teascript.Utils.stringToFile;
 
 public class Tester {
 
@@ -12,7 +13,7 @@ public class Tester {
     static void test() {
         failed = new ArrayList<>();
         m = new Machine();
-        m.init("units.tea");
+        m.init(stringToFile("units.tea"));
         m.action();
         println("\n\n");
         if (!failed.isEmpty()) {

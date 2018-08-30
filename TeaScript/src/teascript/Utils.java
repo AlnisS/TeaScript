@@ -398,4 +398,10 @@ public class Utils {
         if(targ.length() > 2) targ = targ.substring(0, targ.length() - 2);
         return targ;
     }
+
+    static File stringToFile(String file_) {
+        String f = System.getProperty("user.dir");
+        f = f.substring(0, f.lastIndexOf("/") + 1);
+        return new File(f + file_);
+    }
 }

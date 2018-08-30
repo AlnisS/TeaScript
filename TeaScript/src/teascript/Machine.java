@@ -94,12 +94,9 @@ public class Machine {
      * function define, global var define, and label define Actions. Finally,
      * runs the <code>init()</code> function in the script file.
      *
-     * @param file_
+     * @param file
      */
-    void init(String file_) {
-        String f = System.getProperty("user.dir");
-        f = f.substring(0, f.lastIndexOf("/") + 1);
-        String file = f + file_;
+    void init(File file) {
         labels = new IntDict();
         floats = new ArrayList<>();
         strings = new ArrayList<>();
@@ -117,7 +114,7 @@ public class Machine {
         sarrs.add(new HashMap<>());
         barrs.add(new HashMap<>());
 
-        rawstrings = loadStrings(new File(file));
+        rawstrings = loadStrings(file);
         actions = new Action[rawstrings.length];
         for (int i = 0; i < actions.length; i++) {
             debugline = i;

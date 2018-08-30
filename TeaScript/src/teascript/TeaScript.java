@@ -1,7 +1,9 @@
 package teascript;
 
+import java.io.File;
 import java.util.ArrayList;
 import static processing.core.PApplet.println;
+import static teascript.Utils.stringToFile;
 
 /**
  * Main class: holds main Machine, other vars; handles startup and unit tests.
@@ -32,15 +34,15 @@ public class TeaScript {
      * @param args not currently used
      */
     public static void main(String[] args) {
-        main("test.tea", new Tint[0]);
+        main(stringToFile("test.tea"), new Tint[0]);
     }
 
-    public static void main(String file, Tint[] tints_) {
+    public static void main(File file, Tint[] tints_) {
         runTests = true;
         main(file, tints_, false);
     }
 
-    public static void main(String file, Tint[] tints_, boolean debug) {
+    public static void main(File file, Tint[] tints_, boolean debug) {
         debugMode = debug;
         tints = tints_;
         st = System.nanoTime();
