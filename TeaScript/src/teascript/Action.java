@@ -615,6 +615,16 @@ public class Action {
         }
     }
 
+    void SYSFUN() {
+        for (Tint t : TeaScript.tints) {
+            if (t.hasVoidByName(fname(splits[1]))) {
+                t.voidByName(isplit(splits[1]));
+                return;
+            }
+        }
+        error("NOCOMMAND", "no void sysfun called " + fname(splits[1]) + "found");
+    }
+
     /**
      * Boolean evaluates string, and if false, skips over rest of FOR block. The
      * skip handles nested FOR statements by adding and subtracting from a
@@ -811,6 +821,8 @@ public class Action {
             case ASET:
                 ASET();
                 break;
+            case SYSFUN:
+                SYSFUN();
         }
     }
 
@@ -913,6 +925,9 @@ public class Action {
             case "ASET":
                 s(Type.ASET, 3);
                 break;
+            case "SYSFUN":
+                s(Type.SYSFUN, 1);
+                break;
             default:
                 if (splits[0].length() == 0) {
                     type = Type.NONE;
@@ -928,6 +943,6 @@ public class Action {
     enum Type {
         PRINT, GOTO, LABEL, BRANCH, VARIABLE, END, NONE, UPSCOPE, DOWNSCOPE,
         USERFUN, FDEF, EFDEF, VARSET, REMVAR, BRKPT, RET, GVAR, U, IF, ENDIF,
-        ELSE, ELIF, DO, DOWHILE, WHILE, ENDWHILE, FOR, ENDFOR, ARR, ASET
+        ELSE, ELIF, DO, DOWHILE, WHILE, ENDWHILE, FOR, ENDFOR, ARR, ASET, SYSFUN
     }
 }

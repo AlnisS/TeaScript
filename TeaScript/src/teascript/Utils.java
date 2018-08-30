@@ -385,4 +385,11 @@ public class Utils {
     static float mod(float a, float b) {
         return (a % b + b) % b;
     }
+
+    static String fname(String cand) {
+        if(cand.indexOf("(") != -1) {
+            return cand.substring(0, cand.indexOf("("));
+        }
+        return cand;
+    }
 }

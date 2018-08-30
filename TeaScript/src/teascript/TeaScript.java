@@ -18,10 +18,13 @@ public class TeaScript {
      * Whether errors should be printed (true) or swallowed and pretty printed.
      */
     static boolean debugMode = true;
+    static boolean runTests = true;
     /**
      * Start time of execution.
      */
     static long st;
+
+    static Tint[] tints;
 
     /**
      * Sets up st, list of failed tests, and m, then runs the test.tea script.
@@ -29,10 +32,21 @@ public class TeaScript {
      * @param args not currently used
      */
     public static void main(String[] args) {
+        main("test.tea", new Tint[0]);
+    }
+
+    public static void main(String file, Tint[] tints_) {
+        runTests = false;
+        main(file, tints_, false);
+    }
+
+    public static void main(String file, Tint[] tints_, boolean debug) {
+        debugMode = debug;
+        tints = tints_;
         st = System.nanoTime();
         Tester.failed = new ArrayList<>();
         m = new Machine();
-        m.init("test.tea");
+        m.init(file);
         m.action();
     }
 
@@ -40,7 +54,9 @@ public class TeaScript {
      * Runs unit tests and prints out run time.
      */
     public static void end() {
-        Tester.test();
+        if(runTests) {
+            Tester.test();
+        }
         println("\ntime taken: " + (System.nanoTime() - st) / 1000000000. + " sec");
     }
 }

@@ -5,6 +5,7 @@ import static processing.core.PApplet.*;
 import static teascript.BMan.*;
 import static teascript.SMan.*;
 import static teascript.TeaScript.m;
+import static teascript.TeaScript.tints;
 import static teascript.Utils.*;
 
 /**
@@ -162,6 +163,10 @@ public class FMan {
         return f;
     }
 
+    static boolean isMushyFloat(String exp_) {
+        return ! (isString(exp_) && isBoolean(exp_));
+    }
+
     static String[] maths = {"abs", "ceil", "floor", "floordiv", "min", "max",
         "round", "random", "exp", "log", "log10", "pow", "sqrt", "sin", "cos",
         "tan", "asin", "acos", "atan", "atan2", "sinh", "cosh", "tanh", "todeg",
@@ -169,12 +174,15 @@ public class FMan {
         "far"};
 
     static boolean isMath(String exp) {
-        String targ = "";
-        if (exp.contains("(")) {
-            targ = exp.substring(0, exp.indexOf("("));
-        }
+        String targ = removeArgs(exp);
+        if(targ.length() > 2) targ = targ.substring(0, targ.length() - 2);
         for (String s : maths) {
             if (s.equals(targ)) {
+                return true;
+            }
+        }
+        for (Tint t : TeaScript.tints) {
+            if (t.hasFloatByName(targ)) {
                 return true;
             }
         }
@@ -183,6 +191,11 @@ public class FMan {
 
     static float doMath(String exp) {
         String[] sp = isplit(exp);
+        for (Tint t : TeaScript.tints) {
+            if (t.hasFloatByName(sp[0])) {
+                return t.floatByName(sp);
+            }
+        }
         switch (sp[0]) {
             case "abs":
                 return abs(feval(sp[1]));
