@@ -1,9 +1,11 @@
 package teascript;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import static processing.core.PApplet.println;
+import static teascript.Utils.help;
 import static teascript.Utils.stringToFile;
 
 /**
@@ -40,11 +42,13 @@ public class TeaScript {
         int fileIndex = -1;
         int rawFileIndex = -1;
         for(int i = 0; i < args.length; i++) {
-            if(args[i].equals("-f")) fileIndex = i + 1;
-            if(args[i].equals("-p")) rawFileIndex = i + 1;
-            if(args[i].equals("-t")) runTests = true;
-            if(args[i].equals("-l")) printTime = true;
-            if(args[i].equals("-d")) debugMode = true;
+            String s = args[i];
+            if(s.equals("-f") || s.equals("--file")) fileIndex = i + 1;
+            if(s.equals("-p") || s.equals("--path")) rawFileIndex = i + 1;
+            if(s.equals("-t") || s.equals("--test")) runTests = true;
+            if(s.equals("-l") || s.equals("--logtime")) printTime = true;
+            if(s.equals("-d") || s.equals("--debug")) debugMode = true;
+            if(s.equals("-h") || s.equals("--help")) help();
         }
         if(fileIndex != -1) {
             f = stringToFile(args[fileIndex]);
@@ -52,7 +56,8 @@ public class TeaScript {
         if(rawFileIndex != -1) {
             f = new File(args[rawFileIndex]);
         }
-        main(f, new Tint[0]);
+        if(f != null) main(f, new Tint[0]);
+        else println("\nno file specified for execution: try --help\n");
     }
 
     public static void main(File file, Tint[] tints_) {

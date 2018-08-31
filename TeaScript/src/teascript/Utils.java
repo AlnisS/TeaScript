@@ -2,6 +2,7 @@ package teascript;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -376,6 +377,10 @@ public class Utils {
                 }
             }
             return lines.toArray(new String[lines.size()]);
+        } catch (FileNotFoundException e) {
+            println("\ncouldn't find specified file for execution.\n");
+            System.exit(0);
+            return null;
         } catch (Exception e) {
             println(e.toString());
             return null;
@@ -403,5 +408,47 @@ public class Utils {
         String f = System.getProperty("user.dir");
         f = f.substring(0, f.lastIndexOf("/") + 1);
         return new File(f + file_);
+    }
+
+    static void help() {
+        String s = "                    ";
+        println();
+        println("-f    --file        " +
+                "Specifies .tea file to run relative to the directory above\n" +
+            s + "the one in which the project/jar resides. This is used for\n" +
+            s + "easy specification of a file when working in the IDE. For\n" +
+            s + "an example, see how the test.tea file in this repo is one\n" +
+            s + "folder up from the IntelliJ IDEA project.\n");
+        println("-p    --path        " +
+                "Specifies the exact global path to the .tea file to run\n" +
+            s + "including the name of the file itself. Use of the \"~\"\n" +
+            s + "character to represent the user's home directory works.\n");
+        println("-t    --test        " +
+                "Runs the unit tests after running the specified .tea file.\n" +
+            s + "It is intended for use in the IDE because the path to the\n" +
+            s + "unit test file is somewhat hardcoded in a way equivalent\n" +
+            s + "to \"-f units.tea\". If you want to run it from an IDE,\n" +
+            s + "ensure the file is in the same place relative to the IDE\n" +
+            s + "as it is in this repo. If using an exported .jar (other\n" +
+            s + "than in the context of an added library in an IDE), the\n" +
+            s + "units.tea file must be one directory up from the .jar.\n");
+        println("-l    --logtime     " +
+                "Log the amount of time taken to load and execute the\n" +
+            s + "script (including unit tests if applicable). Will only be\n" +
+            s + "called if the .tea file calls END() to halt execution\n" +
+            s + "(instead of running to the end of its main() function).\n");
+        println("-d    --debug       " +
+                "Enables debug mode. Not recommended for normal script\n" +
+            s + "execution. This prevents the interpreter from trying to\n" +
+            s + "swallow the Java stack traces of script errors. By\n" +
+            s + "default, the interpreter tries to pretty print the error\n" +
+            s + "from parsing the script. It will still try to do so in\n" +
+            s + "debug mode, but things may disassemble. Basically, if\n" +
+            s + "you're trying to debug your script, don't use it, but if\n" +
+            s + "you are trying to debug the TeaScript interpreter, use it.\n");
+        println("-h    --help        " +
+                "Prints an incomprehensible and poorly worded ramble about\n" +
+            s + "TeaScript, allegedly on how to use it.\n");
+        System.exit(0);
     }
 }
