@@ -2,6 +2,7 @@ package teascript;
 
 import java.io.File;
 import java.util.ArrayList;
+
 import static processing.core.PApplet.println;
 import static teascript.Utils.stringToFile;
 
@@ -19,8 +20,9 @@ public class TeaScript {
     /**
      * Whether errors should be printed (true) or swallowed and pretty printed.
      */
-    static boolean debugMode = true;
-    static boolean runTests = true;
+    static boolean debugMode = false;
+    static boolean runTests = false;
+    static boolean printTime = false;
     /**
      * Start time of execution.
      */
@@ -34,16 +36,26 @@ public class TeaScript {
      * @param args not currently used
      */
     public static void main(String[] args) {
-        main(stringToFile("test.tea"), new Tint[0]);
+        File f = null;
+        int fileIndex = -1;
+        int rawFileIndex = -1;
+        for(int i = 0; i < args.length; i++) {
+            if(args[i].equals("-f")) fileIndex = i + 1;
+            if(args[i].equals("-p")) rawFileIndex = i + 1;
+            if(args[i].equals("-t")) runTests = true;
+            if(args[i].equals("-l")) printTime = true;
+            if(args[i].equals("-d")) debugMode = true;
+        }
+        if(fileIndex != -1) {
+            f = stringToFile(args[fileIndex]);
+        }
+        if(rawFileIndex != -1) {
+            f = new File(args[rawFileIndex]);
+        }
+        main(f, new Tint[0]);
     }
 
     public static void main(File file, Tint[] tints_) {
-        runTests = true;
-        main(file, tints_, false);
-    }
-
-    public static void main(File file, Tint[] tints_, boolean debug) {
-        debugMode = debug;
         tints = tints_;
         st = System.nanoTime();
         Tester.failed = new ArrayList<>();
@@ -59,6 +71,8 @@ public class TeaScript {
         if(runTests) {
             Tester.test();
         }
-        println("\ntime taken: " + (System.nanoTime() - st) / 1000000000. + " sec");
+        if(printTime) {
+            println("\ntime taken: " + (System.nanoTime() - st) / 1000000000. + " sec");
+        }
     }
 }

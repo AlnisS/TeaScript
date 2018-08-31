@@ -622,7 +622,8 @@ public class Action {
                 return;
             }
         }
-        error("NOCOMMAND", "no void sysfun called " + fname(splits[1]) + "found");
+        error("NOCOMMAND", "no void sysfun called " +
+                fname(splits[1]) + " found");
     }
 
     /**
