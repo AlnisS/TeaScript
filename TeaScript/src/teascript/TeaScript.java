@@ -58,12 +58,18 @@ public class TeaScript {
 
     /** Runs TeaScript file (file) using tints_ to lookup external stuff. */
     public static void main(File file, Tint[] tints_) {
+        init(file, tints_);
+        new Action("USERFUN(init())").execute(null);
+        m.action();
+    }
+
+    /** Readies the system for execution. */
+    public static void init(File file, Tint[] tints_) {
         tints = tints_;
         st = System.nanoTime();
         Tester.failed = new ArrayList<>();
         m = new Machine();
         m.init(file);
-        m.action();
     }
 
     /** Runs unit tests and prints out run time. */

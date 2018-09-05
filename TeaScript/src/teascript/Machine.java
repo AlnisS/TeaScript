@@ -128,7 +128,6 @@ public class Machine {
                 a.execute(null);
             }
         }
-        new Action("USERFUN(init())").execute(null);
     }
 
     /**
